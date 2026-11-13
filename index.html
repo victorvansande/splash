@@ -57,13 +57,33 @@
   .target { transition:fill .6s; }
   .vault { font-family:var(--fb); font-weight:800; }
   /* finale */
-  #finale { position:fixed; inset:0; z-index:20; display:none; place-items:center; background:rgba(0,32,95,.86); }
+  #finale { position:fixed; inset:0; z-index:20; display:none; place-items:center; background:rgba(0,16,50,.6); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); overflow:hidden; }
   #finale.show { display:grid; }
-  #finale .box { text-align:center; position:relative; z-index:1; background:rgba(0,51,153,.9); padding:28px 44px; border-radius:24px; }
-  #finale h3 { font-family:var(--fh); font-weight:400; color:var(--geel); font-size:clamp(40px,7vw,110px); margin:0; line-height:.9; }
-  #finale p { font-size:22px; color:var(--muted); }
-  #finale .big { font-family:var(--fb); font-size:clamp(50px,9vw,140px); font-weight:800; letter-spacing:.12em; }
-  #finale button { margin-top:10px; font:600 15px var(--fb); background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:10px; padding:8px 14px; cursor:pointer; }
+  #finale .fsplat { position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+  #finale .stage::before { content:''; position:absolute; inset:-14% -10%; z-index:-1; background:radial-gradient(closest-side, rgba(0,20,70,.92) 55%, rgba(0,20,70,0)); }
+  #finale .stage { position:relative; z-index:2; text-align:center; width:min(96vw,1100px); }
+  .vault { width:min(56vw,340px); margin:0 auto; transition:transform 1s cubic-bezier(.6,-0.3,.4,1.4), opacity .7s; transform-origin:50% 50%; }
+  .vault .wheel { transform-origin:200px 200px; transition:transform 1.5s cubic-bezier(.5,0,.2,1); }
+  .vault.spin .wheel { transform:rotate(540deg); }
+  .vault.open { transform:perspective(900px) rotateY(-100deg) scale(.6); opacity:0; }
+  .vault.shake { animation:vshake .35s linear 3; }
+  @keyframes vshake { 25% { translate:-6px 0; } 75% { translate:6px 0; } }
+  .reveal { display:none; }
+  .reveal.on { display:block; }
+  .ftitle { font-family:var(--fh); font-weight:700; color:#FFCC33; font-size:clamp(46px,8vw,120px); line-height:.95; margin:0; text-shadow:0 6px 0 rgba(0,0,0,.25); }
+  .ftitle span { display:inline-block; opacity:0; transform:translateY(-60px) rotate(-12deg); animation:fdrop .6s cubic-bezier(.2,1.6,.4,1) forwards; }
+  @keyframes fdrop { to { opacity:1; transform:none; } }
+  .fdigits { display:flex; justify-content:center; gap:clamp(8px,1.4vw,18px); margin:clamp(18px,3vh,34px) 0; }
+  .fd { width:clamp(62px,10vw,140px); height:clamp(84px,13.5vw,186px); border-radius:clamp(14px,2vw,26px); display:grid; place-items:center; font-weight:800; font-size:clamp(48px,8vw,124px); color:#fff; background:rgba(255,255,255,.08); border:3px dashed rgba(255,255,255,.3); text-shadow:0 4px 0 rgba(0,0,0,.25); transform:scale(.8); opacity:.4; }
+  .fd.in { animation:fdin .7s cubic-bezier(.2,1.8,.4,1) forwards; border-style:solid; }
+  @keyframes fdin { 0% { transform:scale(.3) rotate(-25deg); opacity:0; } 60% { transform:scale(1.18) rotate(6deg); opacity:1; } 100% { transform:rotate(var(--r,0deg)); opacity:1; } }
+  .fdigits.glow .fd { box-shadow:0 0 0 4px rgba(255,255,255,.25), 0 0 40px rgba(255,255,255,.35); transition:box-shadow .6s; }
+  .fsub { font-size:clamp(18px,2vw,28px); color:#fff; font-weight:600; opacity:0; transform:translateY(12px); transition:opacity .6s, transform .6s; }
+  .fsub.on { opacity:1; transform:none; }
+  .fbtns { margin-top:22px; display:flex; gap:12px; justify-content:center; opacity:0; transition:opacity .6s; }
+  .fbtns.on { opacity:1; }
+  .fbtns button { font:700 18px var(--fb); border-radius:999px; padding:12px 26px; cursor:pointer; border:2px solid rgba(255,255,255,.5); background:transparent; color:#fff; }
+  .fbtns button.main { background:#FFCC33; border-color:#FFCC33; color:#00205f; font-size:22px; padding:14px 36px; }
 
   #zoom { position:fixed; inset:0; z-index:15; display:grid; place-items:center; background:rgba(0,32,95,0); transition:background .4s; pointer-events:none; }
   #zoom.show { background:rgba(0,32,95,.88); pointer-events:auto; cursor:pointer; }
@@ -91,6 +111,10 @@
   .team .tr { font-size:13px; color:var(--geel); font-weight:600; margin-top:2px; }
   .team .open { color:var(--muted); font-weight:400; font-style:italic; }
   #intro .go { font-family:var(--fh); font-size:34px; border:0; border-radius:14px; padding:12px 38px; background:var(--geel); color:var(--bg); cursor:pointer; }
+  #intro .istart { display:flex; align-items:center; gap:28px; flex-wrap:wrap; }
+  #intro .iclock { width:300px; height:120px; }
+  #intro .iclock .cl-time { font-size:56px; opacity:1; }
+  #intro .iclock .cl-label { opacity:.8; }
   #intro .go:hover { transform:rotate(-2deg) scale(1.03); }
   #intro .note { color:var(--muted); font-size:13px; margin-left:14px; }
 
@@ -232,8 +256,8 @@
     .team { padding:9px 12px; }
     .team .tp { font-size:16px; }
     #intro .go { width:100%; font-size:30px; }
+    #intro .iclock { width:100%; }
     #intro .note { display:none; }
-    #finale .box { padding:20px; margin:0 12px; }
     footer { flex-direction:column; gap:6px; }
   }
   @media (max-width:900px){ .grid{grid-template-columns:1fr} .two{grid-template-columns:1fr} }
@@ -284,6 +308,7 @@
   </footer>
 </div>
 
+<svg width="0" height="0" style="position:absolute"><symbol id="clockblob" viewBox="0 0 400 175"><g fill="#FFCC33"><path d="M18 30 C60 8 140 14 210 10 C280 6 350 12 384 26 C398 40 392 62 396 80 C400 100 388 118 360 126 C300 138 220 130 150 134 C90 138 40 132 16 118 C2 104 8 84 4 66 C0 48 6 38 18 30 Z"/><path d="M104 128 q7 0 7 12 v16 a7 7 0 0 1 -14 0 v-16 q0 -12 7 -12z"/><path d="M262 128 q5 0 5 9 v24 a5 5 0 0 1 -10 0 v-24 q0 -9 5 -9z"/><circle cx="330" cy="150" r="6"/><circle cx="60" cy="148" r="4"/></g></symbol></svg>
 <div id="intro"><svg class="ibg desat" id="introbg" aria-hidden="true"></svg>
   <div class="icard">
     <svg class="logo" aria-label="Gekkoo"><use href="#gk-logo"/></svg>
@@ -291,7 +316,10 @@
     <p class="story">Een geheime kunstenaar, minimalist en de maker van alle lelijke AI-posters, is ervan overtuigd dat kunst droog, monotoon en saai moet zijn. Hij heeft <b>alle kleuren van de wereld</b> verstopt in een kluis in het magazijn.<br><br>Elk duo krijgt een kamer en een opdracht. Breng jullie resultaat naar de refter: wij, de <b>Kleurmusketiers</b>, keuren het en typen jullie <b>kleurcode</b> in op ons geheime portaal. Zijn alle kleurcodes ontgrendeld, dan verschijnt de code van de kluis. Daarin zit alles om te splash painten. Zo brengen we <b>samen</b>, als Gekkoo, de kleur terug in de wereld.</p>
     <h3>De duo's</h3>
     <div class="teams" id="teams"></div>
-    <button class="go" id="go">Aan de slag!</button>
+    <div class="istart">
+      <div class="clock idle iclock"><svg class="blob desat" viewBox="0 0 400 175" preserveAspectRatio="none" aria-hidden="true"><use href="#clockblob"/></svg><div class="cl-label">Tijd per opdracht</div><div class="cl-time">25:00</div></div>
+      <button class="go" id="go">Aan de slag!</button>
+    </div>
   </div>
 </div>
 <canvas id="confetti"></canvas>
@@ -321,11 +349,20 @@
   <div class="ufoot"><div class="together">We spelen samen. Klaar? Help een ander duo.</div><div class="wbtns" style="margin:0"><button id="uclose" type="button">Sluiten</button></div></div>
 </div></div>
 <div id="zoom"><div class="zbox"><div class="ztitle" id="ztitle"></div><div id="zsvg"></div></div></div>
-<div id="finale"><div class="box">
-  <h3>DE KLUIS IS OPEN</h3>
-  <p>Alle zes kleuren ontgrendeld. Naar het magazijn: samen brengen we de kleur terug!</p>
-  <div class="big" id="finalcode"></div>
-  <button id="closefin">sluiten</button>
+<div id="finale"><svg class="fsplat" id="fsplat" aria-hidden="true"></svg><div class="stage">
+  <svg class="vault" id="vault" viewBox="0 0 400 400" aria-hidden="true">
+    <circle cx="200" cy="200" r="190" fill="#5b6270"/><circle cx="200" cy="200" r="172" fill="#7a8291"/><circle cx="200" cy="200" r="160" fill="none" stroke="#5b6270" stroke-width="6" stroke-dasharray="4 14"/>
+    <circle cx="200" cy="200" r="120" fill="#6a7180"/>
+    <g class="wheel"><circle cx="200" cy="200" r="88" fill="none" stroke="#c9ced8" stroke-width="12"/><g stroke="#c9ced8" stroke-width="12" stroke-linecap="round"><line x1="200" y1="90" x2="200" y2="310"/><line x1="90" y1="200" x2="310" y2="200"/><line x1="122" y1="122" x2="278" y2="278"/><line x1="278" y1="122" x2="122" y2="278"/></g><circle cx="200" cy="200" r="30" fill="#c9ced8"/><circle cx="200" cy="200" r="12" fill="#5b6270"/></g>
+    <rect x="370" y="150" width="22" height="100" rx="8" fill="#4a505c"/>
+  </svg>
+  <div class="reveal" id="freveal">
+    <h3 class="ftitle" id="ftitle"></h3>
+    <div class="fdigits" id="fdigits"></div>
+    <div class="fsub" id="fsub">Alle kleuren zijn terug. Naar het magazijn: samen brengen we de kleur terug in de wereld!</div>
+    <div class="fbtns" id="fbtns"><button class="main" id="closefin">Naar het magazijn!</button></div>
+    <div class="big" id="finalcode" style="display:none"></div>
+  </div>
 </div></div>
 
 <script>
@@ -455,7 +492,7 @@ function checkFinale(animate){
   if(!all) return;
   const code = TARGETS.map(t=>slots[t.slot].firstChild.textContent).join("");
   const vl=document.getElementById("vaultlabel"); if(vl){ vl.textContent="KLUIS OPEN · "+code; vl.setAttribute("fill","#FF3333"); }
-  if(animate){ document.getElementById("finalcode").textContent=code; document.getElementById("finale").classList.add("show"); bigSplash(); fanfareSound(); [0,400,800,1300,1900].forEach((d,i)=>setTimeout(()=>confetti({x:innerWidth*(0.15+0.7*Math.random()),y:innerHeight*(0.25+0.3*Math.random()),count:160,power:16}),d)); setTimeout(()=>confetti({x:innerWidth/2,y:-20,count:260,angle:Math.PI/2,spread:Math.PI*0.9,power:9}),900); }
+  if(animate){ document.getElementById("finalcode").textContent=code; startFinale(code); }
 }
 
 
@@ -575,9 +612,39 @@ const bg=document.getElementById("bgsplat");
 function bgSplats(){ bg.setAttribute("viewBox","0 0 100 60"); bg.setAttribute("preserveAspectRatio","xMidYMid slice"); addIcons(bg,[0,0,100,60],42,7,22,HOUSE); bg.querySelectorAll(".splat").forEach(n=>n.style.animation="none"); }
 bgSplats();
 function bigSplash(){
-  const f=document.getElementById("finale"); let s=f.querySelector("svg"); if(s) s.remove();
-  s=el("svg",{viewBox:"0 0 100 60",preserveAspectRatio:"xMidYMid slice",style:"position:absolute;inset:0;width:100%;height:100%;z-index:0"});
-  f.insertBefore(s,f.firstChild); addSplats(s,[0,0,100,60],"#FFCC33",Date.now()%100000,4,50); addIcons(s,[0,0,100,60],Date.now()%9999,8,18,HOUSE);
+  const s=document.getElementById("fsplat"); s.innerHTML=""; s.setAttribute("viewBox","0 0 100 60"); s.setAttribute("preserveAspectRatio","xMidYMid slice");
+  const cols=TARGETS.map(t=>"#"+(state[t.slot]||"FFCC33"));
+  cols.forEach((c,i)=>addSplats(s,[0,0,100,60],c,(Date.now()+i*991)%100000,3,7));
+  addIcons(s,[0,0,100,60],Date.now()%9999,8,16,HOUSE);
+}
+function drumroll(ms){ const c=ac(); if(!c) return; const n=c.currentTime; for(let t2=0;t2<ms/1000;t2+=0.055){ noiseBurst(n+t2,0.05,0.08+0.25*(t2/(ms/1000)),1800,600); } }
+function startFinale(code){
+  const F=document.getElementById("finale"), V=document.getElementById("vault"), R=document.getElementById("freveal");
+  const D=document.getElementById("fdigits"), T=document.getElementById("ftitle"), S=document.getElementById("fsub"), B=document.getElementById("fbtns");
+  document.getElementById("fsplat").innerHTML=""; R.classList.remove("on"); S.classList.remove("on"); B.classList.remove("on"); D.classList.remove("glow");
+  V.style.display=""; V.classList.remove("spin","open","shake"); F.classList.add("show");
+  T.innerHTML="DE KLUIS IS OPEN".split("").map((ch,i)=>ch===" "?"<span>&nbsp;</span>":`<span style="animation-delay:${(i*0.05).toFixed(2)}s">${ch}</span>`).join("");
+  const cols=TARGETS.map(t=>"#"+state[t.slot]);
+  D.innerHTML=code.split("").map((d,i)=>`<div class="fd" style="--r:${[-4,3,-2,4,-3,2][i%6]}deg">?</div>`).join("");
+  // 1. drumroll + wheel spin
+  setTimeout(()=>{ drumroll(1600); V.classList.add("spin"); },250);
+  setTimeout(()=>{ V.classList.add("shake"); },1650);
+  // 2. door opens + splash
+  setTimeout(()=>{ V.classList.add("open"); const c=ac(); if(c){ const n=c.currentTime; noiseBurst(n,1.0,0.8,4200,200); plop(n); } bigSplash();
+    confetti({x:innerWidth/2,y:innerHeight/2,count:260,power:22}); },2600);
+  // 3. title + digits one by one
+  setTimeout(()=>{ V.style.display="none"; R.classList.add("on"); },3300);
+  const notes=[523.25,587.33,659.25,783.99,880,1046.5];
+  code.split("").forEach((d,i)=>setTimeout(()=>{ const el2=D.children[i]; el2.textContent=d; el2.style.background=cols[i]; el2.style.borderColor=cols[i]; el2.classList.add("in");
+    const c=ac(); if(c){ const n=c.currentTime; tone(n,notes[i],0.5,0.18,"triangle"); tone(n,notes[i]*2,0.3,0.05,"sine"); noiseBurst(n,0.25,0.25,3000,400); }
+    const r=el2.getBoundingClientRect(); confetti({x:r.left+r.width/2,y:r.top+r.height/2,count:40,power:9,colors:[cols[i],"#ffffff","#FFCC33"]}); }, 4300+i*420));
+  // 4. fanfare + finale
+  const tEnd=4300+code.length*420+250;
+  setTimeout(()=>{ D.classList.add("glow"); fanfareSound(); S.classList.add("on");
+    [0,500,1200].forEach(dl=>setTimeout(()=>{ confetti({x:innerWidth*0.05,y:innerHeight*0.95,count:90,angle:-Math.PI/3,spread:0.8,power:24}); confetti({x:innerWidth*0.95,y:innerHeight*0.95,count:90,angle:-Math.PI*2/3,spread:0.8,power:24}); },dl));
+    setTimeout(()=>confetti({x:innerWidth/2,y:-20,count:200,angle:Math.PI/2,spread:Math.PI*0.95,power:9}),900);
+  }, tEnd);
+  setTimeout(()=>B.classList.add("on"), tEnd+1400);
 }
 document.getElementById("closefin").onclick=()=>document.getElementById("finale").classList.remove("show");
 
@@ -594,7 +661,7 @@ TEAMS.forEach((m,i)=>{
   const d=document.createElement("div"); d.className="team";
   const ns=m.map(n=>n?n:'<span class="open">vrije plek</span>');
   const names = ns.length>2 ? ns.slice(0,-1).join(", ")+" &amp; "+ns.at(-1) : ns.join(" &amp; ");
-  d.innerHTML=`<svg class="desat" fill="${TCOL[i]}"><use href="#${ICONS[i%4]}"/></svg><div><div class="tn">${m.length>2?"Trio":"Duo"} ${i+1}</div><div class="tp">${names}</div><div class="tr">${TROOM[i]}</div></div>`;
+  d.innerHTML=`<svg class="desat" fill="${TCOL[i]}"><use href="#${ICONS[i%4]}"/></svg><div><div class="tn">${m.length>2?"Trio":"Duo"} ${i+1}</div><div class="tp">${names}</div></div>`;
   tw.appendChild(d);
 });
 (function(){ const s=document.getElementById("introbg"); s.setAttribute("viewBox","0 0 100 60"); s.setAttribute("preserveAspectRatio","xMidYMid slice"); addIcons(s,[0,0,100,60],7,8,26,HOUSE); s.querySelectorAll(".splat").forEach(n=>n.style.animation="none"); })();
