@@ -398,7 +398,7 @@ const TEAMS = [
   ["Bouchra","Olaf"], ["Aaron","Elke"], ["Marki","Annelies"]
 ];
 const TROOM = ["Copykot · 1ste verdiep","Keuken · 2de verdiep","Mini vergaderlokaal · 3de verdiep","Leefruimte · 3de verdiep","Onthaal · gelijkvloers","Klein vergaderlokaal · 2de verdiep"];
-const TCOL = ["#FFCC33","#FF3333","#FF99CC","#479554","#FFFFFF","#FFCC33","#FF99CC"];
+const TCOL = ["#A3E635","#60A5FA","#FB7185","#F59E0B","#A78BFA","#34D399"];
 const tw=document.getElementById("teams");
 TEAMS.forEach((m,i)=>{
   const d=document.createElement("div"); d.className="team";
@@ -409,7 +409,7 @@ TEAMS.forEach((m,i)=>{
 });
 (function(){ const s=document.getElementById("introbg"); s.setAttribute("viewBox","0 0 100 60"); s.setAttribute("preserveAspectRatio","xMidYMid slice"); addIcons(s,[0,0,100,60],7,8,26,HOUSE); s.querySelectorAll(".splat").forEach(n=>n.style.animation="none"); })();
 const intro=document.getElementById("intro");
-document.getElementById("go").onclick=()=>{ intro.classList.add("gone"); setTimeout(()=>document.getElementById("hex").focus(),400); };
+document.getElementById("go").onclick=()=>{ intro.classList.add("gone"); setTimeout(()=>layoutPawns(false),50); setTimeout(()=>document.getElementById("hex").focus(),400); };
 document.getElementById("showintro").onclick=()=>intro.classList.remove("gone");
 
 
@@ -450,6 +450,8 @@ distBtn.onclick=()=>{
 setBtn();
 requestAnimationFrame(()=>layoutPawns(false));
 window.addEventListener("resize",()=>layoutPawns(false));
+window.addEventListener("load",()=>layoutPawns(false));
+if(window.ResizeObserver){ const ro=new ResizeObserver(()=>layoutPawns(false)); ro.observe(document.querySelector(".wrap")); Object.values(svgs).forEach(s=>ro.observe(s)); }
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>layoutPawns(false));
 
 // ---------- reset (spelleider) ----------
