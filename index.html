@@ -7,9 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#003399; --panel:#0b3da6; --line:rgba(255,255,255,.22); --ink:#ffffff; --muted:#c3d0f2; --room:#ffffff; --wall:#00205f; --geel:#FFCC33; --rood:#FF3333; --roze:#FF99CC; --groen:#479554;
+  :root { --sat:0; --bg:color-mix(in srgb, #003399 calc(var(--sat)*100%), #3c3c41); --panel:color-mix(in srgb, #0b3da6 calc(var(--sat)*100%), #4b4b52); --navy:color-mix(in srgb, #00205f calc(var(--sat)*100%), #2e2e33); --line:rgba(255,255,255,.22); --ink:#ffffff; --muted:#c3d0f2; --room:#ffffff; --wall:#00205f; --geel:color-mix(in srgb, #FFCC33 calc(var(--sat)*100%), #c9c9c9); --rood:#FF3333; --roze:#FF99CC; --groen:#479554;
   --fb:"Sofia Pro","SofiaPro","Poppins",system-ui,sans-serif; --fh:"ProvidenceSansPro","Providence Sans Pro","Patrick Hand","Sofia Pro","Poppins",sans-serif; }
   * { box-sizing:border-box; }
+  .desat { filter:grayscale(calc(1 - var(--sat))); transition:filter 1.4s; }
+  html,body { transition:background 1.4s; }
   html,body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--fb); }
   body { min-height:100vh; overflow-x:hidden; }
   #bgsplat { position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.22; }
@@ -30,8 +32,8 @@
   .codelabel { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.12em; margin-bottom:8px; }
   /* input */
   .entry { margin:30px 0 22px; background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:16px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
-  .swatch { width:64px; height:64px; border-radius:50%; background:#00205f; border:3px solid var(--line); flex:none; transition:background .2s; }
-  .hexbox { display:flex; align-items:center; background:#00205f; border:2px solid var(--line); border-radius:12px; padding:0 14px; font-family:var(--fb); font-size:34px; font-weight:700; }
+  .swatch { width:64px; height:64px; border-radius:50%; background:var(--navy); border:3px solid var(--line); flex:none; transition:background .2s; }
+  .hexbox { display:flex; align-items:center; background:var(--navy); border:2px solid var(--line); border-radius:12px; padding:0 14px; font-family:var(--fb); font-size:34px; font-weight:700; }
   .hexbox span { color:var(--muted); }
   .hexbox input { background:transparent; border:0; outline:0; color:var(--ink); font:inherit; width:170px; text-transform:uppercase; letter-spacing:.06em; padding:8px 4px; }
   .entry button { font-family:var(--fh); font-size:28px; font-weight:400; border:0; border-radius:12px; padding:12px 28px; background:var(--geel); color:var(--bg); cursor:pointer; }
@@ -49,7 +51,7 @@
   svg.plan { width:100%; height:auto; display:block; overflow:visible; }
   .rl { font-family:var(--fb); font-weight:600; fill:#4b4560; }
   .rl.lit { fill:#fff; paint-order:stroke; stroke:rgba(0,0,0,.55); stroke-width:.06; font-weight:800; }
-  .hq { fill:#FF3333; font-family:var(--fb); font-weight:800; }
+  .hq { fill:color-mix(in srgb, #FF3333 calc(var(--sat)*100%), #8a8a8a); font-family:var(--fb); font-weight:800; }
   .splat { transform-box:fill-box; transform-origin:center; animation:pop .55s cubic-bezier(.2,1.8,.4,1) both; }
   @keyframes pop { from { transform:scale(0); opacity:0 } to { transform:scale(1); opacity:1 } }
   .target { transition:fill .6s; }
@@ -96,7 +98,7 @@
   .pawn { position:absolute; left:0; top:0; width:max-content; display:flex; flex-direction:column; align-items:center; gap:5px; transition:transform 1.5s cubic-bezier(.45,0,.2,1); will-change:transform; }
   .pawn .pc { width:34px; height:34px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); display:grid; place-items:center; box-shadow:0 3px 0 rgba(0,0,0,.25); border:2.5px solid #00205f; flex:none; }
   .pawn .pc b { transform:rotate(45deg); font-weight:800; font-size:15px; color:#00205f; }
-  .pawn .pn { background:#00205f; color:#fff; padding:3px 9px 4px; border-radius:10px; white-space:nowrap; text-align:center; line-height:1.15; box-shadow:0 2px 0 rgba(0,0,0,.2); }
+  .pawn .pn { background:var(--navy); color:#fff; padding:3px 9px 4px; border-radius:10px; white-space:nowrap; text-align:center; line-height:1.15; box-shadow:0 2px 0 rgba(0,0,0,.2); }
   .pawn .pn b { display:block; font-size:11.5px; font-weight:700; }
   .pawn .pn small { display:block; font-size:9.5px; font-weight:600; color:var(--geel); }
   .pawn.home .pn { display:none; }
@@ -107,6 +109,25 @@
   .toolbar button { font:700 15px var(--fb); background:transparent; color:var(--ink); border:2px solid var(--geel); border-radius:999px; padding:9px 18px; cursor:pointer; }
   .toolbar button:hover { background:var(--geel); color:var(--bg); }
   @media (max-width:640px){ .pawn { gap:3px; } .pawn .pc { width:22px; height:22px; border-width:2px; } .pawn .pc b { font-size:10px; } .pawn .pn { padding:1px 6px 2px; } .pawn .pn b { font-size:9px; } .pawn .pn small { font-size:7.5px; } .toolbar { margin:0 0 12px; } .toolbar button { width:100%; } }
+
+  .toolbar { align-items:center; }
+  .toolbar .sp { flex:1; }
+  .timer { font-family:var(--fb); font-weight:800; font-size:30px; letter-spacing:.04em; color:var(--muted); font-variant-numeric:tabular-nums; }
+  .timer small { font-size:13px; font-weight:600; margin-left:8px; letter-spacing:0; }
+  .timer.run { color:var(--ink); }
+  .timer.late { color:#ff8a8a; }
+  .pawn .pn i { display:block; font-style:normal; font-size:9.5px; font-weight:600; color:#c3d0f2; margin-top:1px; }
+  .pawn .pn i.done { color:#7CFC9A; }
+  #wheel { position:fixed; inset:0; z-index:25; background:rgba(0,0,0,.72); display:none; place-items:center; }
+  #wheel.show { display:grid; }
+  #wheel .wb { text-align:center; width:min(92vw,720px); }
+  #wheel h3 { font-family:var(--fh); font-weight:400; font-size:42px; margin:0 0 14px; color:var(--geel); }
+  #wheel .wwrap { position:relative; width:min(70vw,380px); margin:0 auto; }
+  #wheel .wwrap:after { content:""; position:absolute; top:-6px; left:50%; transform:translateX(-50%); border:16px solid transparent; border-top:26px solid #fff; border-bottom:0; filter:drop-shadow(0 2px 2px rgba(0,0,0,.4)); }
+  #wsvg { width:100%; display:block; transition:transform 4s cubic-bezier(.12,.6,.15,1); }
+  #wres { font-family:var(--fb); font-weight:700; font-size:24px; line-height:1.3; min-height:64px; margin-top:20px; }
+  #wheel .wclose { margin-top:14px; font:600 15px var(--fb); background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:10px; padding:8px 14px; cursor:pointer; }
+  @media (max-width:640px){ .toolbar { flex-wrap:wrap; } .timer { width:100%; text-align:center; } .toolbar .sp { display:none; } }
   footer { margin-top:18px; color:var(--muted); font-size:12px; display:flex; justify-content:space-between; }
   footer button { background:none; border:0; color:var(--line); cursor:pointer; font:inherit; }
   footer button:hover { color:var(--muted); }
@@ -149,8 +170,8 @@
 </style>
 </head>
 <body>
-<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0" aria-hidden="true"><symbol id="ic-streep" viewBox="240 330 1440 420"><path d="M 746.292969 422.523438 C 733.875 422.542969 604.613281 430.402344 604.613281 430.402344 C 487.484375 436.5 363.828125 436.355469 296.535156 441.867188 L 296.976562 682.835938 C 397.753906 691.074219 830.433594 668.109375 836.910156 668.097656 C 836.910156 668.097656 1305.425781 663.488281 1622.453125 662.910156 L 1623.464844 395.378906 C 1432.421875 395.730469 1259.210938 411.246094 1068.113281 411.597656 "/></symbol><symbol id="ic-boog" viewBox="360 100 1200 880"><path d="M 687.511719 917.273438 C 691.015625 862.023438 682.265625 825.195312 687.242188 769.964844 C 692.09375 716.9375 711.496094 603.691406 738.730469 554.542969 C 738.730469 554.542969 845.5625 458.917969 896.628906 453.371094 C 923.722656 450.429688 1013.53125 450.785156 1038.46875 464 C 1063.835938 477.363281 1112.457031 523.269531 1128.613281 545.671875 L 1188.683594 643.734375 L 1218.832031 768.992188 C 1224.65625 808.066406 1240.941406 891.832031 1240.941406 891.832031 C 1326.867188 881.160156 1377.601562 887.175781 1463.011719 872.675781 C 1472.460938 871.164062 1503.367188 871.109375 1502.242188 859.140625 C 1499.273438 828.5 1494.492188 797.972656 1490.195312 767.558594 C 1482.722656 713.507812 1452.957031 541.824219 1438.601562 513.617188 C 1416.949219 458.882812 1374.148438 409.507812 1339.101562 363.332031 C 1299.132812 309.488281 1261.402344 254.972656 1201.917969 221.164062 C 1159.15625 194.765625 1123.285156 186.332031 1074.40625 181.828125 C 1014.859375 176.296875 926.164062 152.835938 868.1875 167.449219 C 748.085938 197.347656 699.332031 232.449219 620.339844 294.894531 C 579.40625 327.542969 546.773438 375.726562 514.898438 418.027344 C 484.34375 458.421875 442.738281 549.652344 434.683594 599.289062 C 421.300781 683.332031 422.464844 707.570312 417.726562 792.699219 "/></symbol><symbol id="ic-cirkel" viewBox="420 0 1080 1080"><path d="M 1431.523438 496.003906 C 1430.050781 465.925781 1422.136719 436.5 1419.214844 406.511719 C 1416.101562 374.09375 1410.914062 343.53125 1398.59375 313.304688 C 1380.429688 268.933594 1356.628906 226.058594 1322.757812 191.722656 C 1304.605469 173.214844 1283.070312 159.839844 1261.097656 146.433594 C 1231.996094 128.523438 1202.050781 111.386719 1171.335938 96.308594 C 1144.742188 83.265625 1114.464844 76.996094 1085.453125 72.15625 C 1025.59375 62.023438 965.484375 60.699219 904.917969 62.128906 C 854.003906 63.265625 801.964844 75.035156 754.574219 93.949219 C 694.507812 117.832031 635.070312 153.65625 598.816406 208.769531 C 561.398438 265.949219 531.164062 327.984375 510.816406 393.277344 C 489.515625 461.457031 477.175781 531.445312 481.78125 603.085938 C 486.175781 673.292969 505.5 742.109375 540.871094 802.980469 C 554.886719 827.0625 571.257812 849.640625 589.921875 870.324219 C 598.101562 879.5 606.191406 891.566406 615.785156 899.023438 C 626.765625 907.742188 637.78125 916.34375 648.832031 925.0625 C 669.511719 941.152344 691.230469 954.425781 713.628906 968.351562 C 754.148438 993.347656 802.3125 1001.996094 848.4375 1011.75 C 872.742188 1016.765625 895.667969 1018.375 920.269531 1018.332031 C 952.980469 1018.273438 985.8125 1018.734375 1018.570312 1017.15625 C 1029.976562 1016.695312 1040.042969 1013.136719 1050.984375 1010.113281 C 1067.710938 1005.121094 1084.640625 1000.285156 1101.265625 995.324219 C 1117.621094 990.554688 1133.945312 985.988281 1150.300781 981.488281 C 1165.324219 977.242188 1181.582031 974.445312 1195.488281 967.199219 C 1210.691406 959.359375 1225.574219 950.933594 1239.980469 941.660156 C 1267.867188 924.199219 1295.65625 906.027344 1320.5 884.21875 C 1344.90625 862.800781 1361.359375 837.058594 1377.199219 809.058594 C 1390.71875 784.957031 1403.515625 760.285156 1415.460938 735.210938 C 1424.722656 715.859375 1432.90625 696.613281 1435.867188 675.285156 C 1444.378906 615.511719 1434.097656 555.621094 1431.523438 496.003906 C 1429.949219 464.933594 1432.8125 526.742188 1431.523438 496.003906 "/></symbol><symbol id="ic-ster" viewBox="450 0 1020 1080"><path d="M 1400.632812 813.410156 C 1400.632812 813.410156 1392.949219 800.777344 1388.945312 793.835938 C 1350.132812 726.09375 1238.4375 533.105469 1238.4375 533.105469 C 1238.4375 533.105469 1205.597656 484.144531 1204.082031 481.410156 C 1193.085938 467.0625 1184.765625 451.460938 1173.167969 437.414062 C 1197.835938 412.308594 1204.363281 404.839844 1204.363281 404.839844 L 1247.953125 358.308594 C 1264.167969 341.523438 1281.5625 324.976562 1299.800781 310.597656 C 1300.566406 309.828125 1315.914062 294.335938 1315.914062 294.335938 C 1315.914062 294.335938 1341.496094 272.609375 1351.617188 261.746094 L 1256.253906 160.40625 C 1248.214844 168.265625 1220.511719 192.984375 1220.511719 192.984375 C 1220.511719 192.984375 1204.96875 208.660156 1203.050781 210.523438 L 1160.667969 248.808594 C 1160.667969 248.808594 1112.554688 302.300781 1074.617188 343.484375 C 1073.203125 240.390625 1071.96875 140.261719 1071.800781 46.582031 L 920.277344 46.859375 L 920.289062 52.992188 C 920.289062 52.992188 918.4375 209.292969 918.582031 287.410156 C 917.039062 287.410156 903.425781 272.800781 903.425781 272.800781 C 852.046875 215.074219 829.824219 187.269531 774.398438 133.527344 L 740.777344 99.71875 C 740.777344 99.71875 706.980469 66.621094 685.339844 48.507812 C 683.960938 46.96875 666.027344 31.460938 666.027344 30.847656 L 568.835938 162.28125 C 570.914062 163.679688 572.699219 165.261719 574.253906 167.175781 C 574.253906 167.175781 623.835938 212.898438 645.796875 234.132812 C 645.796875 234.132812 785.128906 389.589844 864.761719 454.816406 C 809.453125 504.035156 742.449219 550.335938 695 606.960938 C 642.292969 669.886719 563.113281 771.816406 515.417969 838.617188 L 637.9375 944.59375 C 714.082031 838.464844 816.992188 712.171875 915.960938 626.851562 C 912.339844 737.328125 914.878906 938.667969 915.082031 1049.152344 L 1077.070312 1048.855469 C 1080.609375 887.09375 1079.433594 712.835938 1077.296875 540.847656 C 1084.136719 550.78125 1097.445312 568.5 1097.445312 568.5 C 1098.585938 569.675781 1107.898438 585.835938 1111.449219 590.417969 L 1128.960938 620.375 L 1224.691406 786.539062 C 1241.425781 815.96875 1284.574219 889.609375 1285.304688 890.417969 L 1404.582031 820.828125 C 1403.347656 817.566406 1401.8125 815.992188 1400.632812 813.410156 "/></symbol><symbol id="gk-logo" viewBox="0 120 1000 380"><path d="Layer_1"/><path d="m207.58,224.07c-.71-8.13-1.16-17.65-1.93-25.78-.18-1.81-2.04-14.65-2.04-14.65-4.6.89-9.48.96-14.14,1.34-8.61.71-20.13.66-29.44,1.56,0,0-.01,2.84-.02,3.84,0,0-6.76-1.01-7.61-1.17-4.79-.92-9.41-2.22-14.28-2.64-11.35-1.02-23.31-.35-34.38,2.4-7.71,2.21-15.03,4.93-21.02,10.42-5.45,5.05-11.61,11.46-14.91,18.2-3.73,7.65-5.91,16.51-7.67,24.76-2.13,9.89-3.16,20.01-3.09,30.15.09,10.1,1.14,20.18,4.1,29.86,2.2,7.23,20.38,34.42,27.07,39.22,6.14,4.43,13.9,7.42,21.18,9.4,9.68,2.63,20.44,3.72,30.47,3.01,4.82-.36,9.47-2.24,14.08-3.57,1.04-.28,15.43-4.52,15.42-4.1-.11,2.29.06,10.08-.11,12.35-.56,7.57.58,12.64-.19,20.21-.75,7.27-3.58,22.77-7.39,29.47,0,0-14.8,12.96-21.81,13.64-3.72.36-16.04.18-19.44-1.67-3.46-1.87-10.06-8.24-12.24-11.34l-8.09-13.54-3.95-17.23c-.74-5.37-2.85-16.88-2.85-16.88-11.8,1.33-18.75.43-30.49,2.29-1.3.19-5.54.15-5.4,1.8.36,4.21.97,8.4,1.51,12.58.94,7.43,4.77,31.02,6.7,34.91,2.89,7.54,8.68,14.38,13.42,20.77,5.4,7.45,10.5,14.98,18.6,19.71,5.83,3.69,10.73,4.9,17.43,5.59,8.16.85,20.29,4.2,28.27,2.28,16.52-3.92,23.26-8.66,34.19-17.11,5.66-4.42,10.21-10.98,14.65-16.73,4.25-5.49,10.1-17.95,11.28-24.74,1.96-11.51,1.84-14.84,2.62-26.51,1.87-28.4,2.51-56.9,3.13-85.36.53-23.15-.32-45.38-.55-48.16-.48-5.78-.23-5.81-1.07-18.59"/><path d="m346.45,343.62l3.96-4.8c2.77-3.98,6.1-7.33,9.68-13-8.89-7.45-16.61-13.92-25.48-21.36-2.37,1.87-1.05,2.94-9.11,10.46,0,0-4.5,5.3-12.63,6.75-7.19,1.29-23.28-1.49-23.28-1.49,0,0-10.45-4.16-14.85-6.47-5.87-3.09-10.41-8.35-14.31-13.14.3-.61-3.33-18.43-3.77-18.77v-.3c22.04.2,53.94-1.37,64.24-1.9,10.16-.49,17.54-6.53,17.54-6.53.26-.62,7.39-5.54,7.39-5.54l6.89-8.33s4.25-11.11,5.49-16.97c.04-4.09-4.33-28.64-7.3-31.53l-8.34-10.83c-4.07-4.22-16.79-12.37-21.9-14.49l-4.7-2.07s-7.75-.97-10.88-1.09c-8.75-.35-16.24-1.02-24.45-.22-3.9-.04-11.27,3.68-14.67,5.54-13.99,7.65-22.79,15-31.15,26.62,0,0-.55,2.08-.89,2.28,0,0-8.98,21.43-11.09,32.2-.1,23.71-5.68,49.08,8.69,70.33.9,1.34,10.54,14.53,16,18.38l6.5,3.78c24.15,14.38,61.16,23.07,86.89,6.32l5.53-3.84Z"/><path d="m454.31,219.08c-.48,0-4.68-4.61-4.68-4.61-15.84-18.19-22.68-26.94-39.79-43.91l-10.38-10.67s-10.43-10.45-17.13-16.17c-.43-.48-5.97-5.39-5.97-5.58l-30.78,40.68c.64.44,1.2.94,1.67,1.55,0,0,15.32,14.44,22.1,21.14,0,0,42.95,48.99,67.58,69.62-17.43,15.17-38.5,29.39-53.5,46.9-16.66,19.46-41.73,51-56.84,71.68l37.87,33.49c24.13-32.86,56.68-71.92,87.86-98.21-1.51,34.47-1.41,97.31-1.72,131.79l50.55.46c3.32-100.93.92-217.53,1.79-312.82l-47.29-.43-.02,1.91s-1.11,48.78-1.34,73.15"/><path d="m789.16,267.54c-.17-4.57-1.33-9.05-1.72-13.61-.42-4.93-1.16-9.58-2.98-14.19-2.68-6.77-6.23-13.32-11.31-18.59-2.73-2.84-5.97-4.91-9.29-6.98-4.39-2.77-8.91-5.42-13.55-7.76-4.02-2.02-8.6-3.03-13-3.81-9.07-1.64-18.2-1.94-27.4-1.82-7.73.09-15.66,1.79-22.88,4.58-9.16,3.53-18.25,8.87-23.84,17.18-5.78,8.62-10.47,17.99-13.67,27.87-3.35,10.32-5.34,20.92-4.76,31.81.55,10.67,3.37,21.15,8.64,30.45,2.09,3.68,4.54,7.14,7.34,10.31,1.23,1.41,2.43,3.25,3.88,4.4,1.65,1.34,3.31,2.67,4.97,4.01,3.11,2.48,6.39,4.53,9.77,6.68,6.11,3.86,13.41,5.26,20.4,6.81,3.68.8,7.16,1.09,10.9,1.12,4.97.05,9.95.17,14.93-.01,1.73-.05,3.27-.57,4.93-1.02,2.55-.73,5.13-1.44,7.66-2.16,2.49-.7,4.98-1.36,7.47-2.02,2.29-.62,4.76-1.02,6.89-2.09,2.32-1.16,4.6-2.42,6.8-3.8,4.26-2.6,8.51-5.32,12.32-8.59,3.74-3.21,6.28-7.09,8.73-11.32,2.09-3.64,4.08-7.36,5.93-11.15,1.44-2.92,2.71-5.83,3.2-9.07,1.39-9.06-.07-18.17-.36-27.23-.19-4.72.14,4.67,0,0"/><path d="m941.76,257.47c-2.45-6.21-3.26-12.6-6.46-18.65-3.78-7.07-8.81-13.36-15.66-17.97-27.53-15.94-63.84-21.97-92.42-1.73l-9.82,9-.67,1.04c-9.41,13.66-14.11,31.8-15.18,39.89-.86,6.55.34,13.7,1.19,20.22,1.32,9.81,5.22,14.88,7.89,22,3.24,5.25,6.67,10.34,10.66,15.12,4.71,5.58,9.66,8.57,16.33,11.72,4.57,2.15,9.29,4.5,14.18,5.93,2.72.82,6.68,2.61,9.57,2.44,13.11,1.69,26.15,2.91,38.78-1.62,9.15-3.29,16.58-7.69,22.46-15.24,4.62-5.88,9.18-12.13,12.55-18.77,3.51-6.87,4.58-14.38,5.84-21.81,1.02-5.94,1.91-11.54,1.9-17.59.01-2.86.15-5.75,0-8.61-.09-1.86-1.04-3.61-1.13-5.38-.2-.51.03.54,0,0"/><path d="m670.93,370.77c-11.81-21.31-45.82-82.03-45.82-82.03,0,0-10.03-15.43-10.49-16.29-3.37-4.52-5.9-9.43-9.45-13.87,7.81-7.72,9.88-10.03,9.88-10.03l13.81-14.33c5.13-5.17,10.64-10.25,16.39-14.66.24-.24,5.1-5,5.1-5,0,0,8.08-6.67,11.29-10.01l-29.31-32.05c-2.54,2.42-11.3,10.01-11.3,10.01,0,0-4.92,4.82-5.53,5.4l-13.4,11.76s-25.51,27.57-36.54,38.83c.02-2.31-1.18-26.35-1.18-26.35-.89-21.79-.61-44.77-1.5-57.29l-44.8-.41c-1.74,18.72,1.65,99.2,1.64,100.4,0,0-.1,87.1-.64,146.04l49.73.73c.33-35.51-2.21-67.74-1.88-103.27l7.6-8.29c2,3.04,6.42,9.1,6.42,9.1.35.37,3.18,5.46,4.27,6.9l5.33,9.43,29.14,52.28c5.09,9.26,18.23,32.43,18.46,32.69l37.53-21.19c-.37-1.02-.84-1.52-1.2-2.33,0,0-2.34-3.98-3.56-6.16"/></symbol></svg>
-<svg id="bgsplat" aria-hidden="true"></svg>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0" aria-hidden="true"><symbol id="ic-streep" viewBox="240 330 1440 420"><path d="M 746.292969 422.523438 C 733.875 422.542969 604.613281 430.402344 604.613281 430.402344 C 487.484375 436.5 363.828125 436.355469 296.535156 441.867188 L 296.976562 682.835938 C 397.753906 691.074219 830.433594 668.109375 836.910156 668.097656 C 836.910156 668.097656 1305.425781 663.488281 1622.453125 662.910156 L 1623.464844 395.378906 C 1432.421875 395.730469 1259.210938 411.246094 1068.113281 411.597656 "/></symbol><symbol id="ic-boog" viewBox="360 100 1200 880"><path d="M 687.511719 917.273438 C 691.015625 862.023438 682.265625 825.195312 687.242188 769.964844 C 692.09375 716.9375 711.496094 603.691406 738.730469 554.542969 C 738.730469 554.542969 845.5625 458.917969 896.628906 453.371094 C 923.722656 450.429688 1013.53125 450.785156 1038.46875 464 C 1063.835938 477.363281 1112.457031 523.269531 1128.613281 545.671875 L 1188.683594 643.734375 L 1218.832031 768.992188 C 1224.65625 808.066406 1240.941406 891.832031 1240.941406 891.832031 C 1326.867188 881.160156 1377.601562 887.175781 1463.011719 872.675781 C 1472.460938 871.164062 1503.367188 871.109375 1502.242188 859.140625 C 1499.273438 828.5 1494.492188 797.972656 1490.195312 767.558594 C 1482.722656 713.507812 1452.957031 541.824219 1438.601562 513.617188 C 1416.949219 458.882812 1374.148438 409.507812 1339.101562 363.332031 C 1299.132812 309.488281 1261.402344 254.972656 1201.917969 221.164062 C 1159.15625 194.765625 1123.285156 186.332031 1074.40625 181.828125 C 1014.859375 176.296875 926.164062 152.835938 868.1875 167.449219 C 748.085938 197.347656 699.332031 232.449219 620.339844 294.894531 C 579.40625 327.542969 546.773438 375.726562 514.898438 418.027344 C 484.34375 458.421875 442.738281 549.652344 434.683594 599.289062 C 421.300781 683.332031 422.464844 707.570312 417.726562 792.699219 "/></symbol><symbol id="ic-cirkel" viewBox="420 0 1080 1080"><path d="M 1431.523438 496.003906 C 1430.050781 465.925781 1422.136719 436.5 1419.214844 406.511719 C 1416.101562 374.09375 1410.914062 343.53125 1398.59375 313.304688 C 1380.429688 268.933594 1356.628906 226.058594 1322.757812 191.722656 C 1304.605469 173.214844 1283.070312 159.839844 1261.097656 146.433594 C 1231.996094 128.523438 1202.050781 111.386719 1171.335938 96.308594 C 1144.742188 83.265625 1114.464844 76.996094 1085.453125 72.15625 C 1025.59375 62.023438 965.484375 60.699219 904.917969 62.128906 C 854.003906 63.265625 801.964844 75.035156 754.574219 93.949219 C 694.507812 117.832031 635.070312 153.65625 598.816406 208.769531 C 561.398438 265.949219 531.164062 327.984375 510.816406 393.277344 C 489.515625 461.457031 477.175781 531.445312 481.78125 603.085938 C 486.175781 673.292969 505.5 742.109375 540.871094 802.980469 C 554.886719 827.0625 571.257812 849.640625 589.921875 870.324219 C 598.101562 879.5 606.191406 891.566406 615.785156 899.023438 C 626.765625 907.742188 637.78125 916.34375 648.832031 925.0625 C 669.511719 941.152344 691.230469 954.425781 713.628906 968.351562 C 754.148438 993.347656 802.3125 1001.996094 848.4375 1011.75 C 872.742188 1016.765625 895.667969 1018.375 920.269531 1018.332031 C 952.980469 1018.273438 985.8125 1018.734375 1018.570312 1017.15625 C 1029.976562 1016.695312 1040.042969 1013.136719 1050.984375 1010.113281 C 1067.710938 1005.121094 1084.640625 1000.285156 1101.265625 995.324219 C 1117.621094 990.554688 1133.945312 985.988281 1150.300781 981.488281 C 1165.324219 977.242188 1181.582031 974.445312 1195.488281 967.199219 C 1210.691406 959.359375 1225.574219 950.933594 1239.980469 941.660156 C 1267.867188 924.199219 1295.65625 906.027344 1320.5 884.21875 C 1344.90625 862.800781 1361.359375 837.058594 1377.199219 809.058594 C 1390.71875 784.957031 1403.515625 760.285156 1415.460938 735.210938 C 1424.722656 715.859375 1432.90625 696.613281 1435.867188 675.285156 C 1444.378906 615.511719 1434.097656 555.621094 1431.523438 496.003906 C 1429.949219 464.933594 1432.8125 526.742188 1431.523438 496.003906 "/></symbol><symbol id="ic-ster" viewBox="450 0 1020 1080"><path d="M 1400.632812 813.410156 C 1400.632812 813.410156 1392.949219 800.777344 1388.945312 793.835938 C 1350.132812 726.09375 1238.4375 533.105469 1238.4375 533.105469 C 1238.4375 533.105469 1205.597656 484.144531 1204.082031 481.410156 C 1193.085938 467.0625 1184.765625 451.460938 1173.167969 437.414062 C 1197.835938 412.308594 1204.363281 404.839844 1204.363281 404.839844 L 1247.953125 358.308594 C 1264.167969 341.523438 1281.5625 324.976562 1299.800781 310.597656 C 1300.566406 309.828125 1315.914062 294.335938 1315.914062 294.335938 C 1315.914062 294.335938 1341.496094 272.609375 1351.617188 261.746094 L 1256.253906 160.40625 C 1248.214844 168.265625 1220.511719 192.984375 1220.511719 192.984375 C 1220.511719 192.984375 1204.96875 208.660156 1203.050781 210.523438 L 1160.667969 248.808594 C 1160.667969 248.808594 1112.554688 302.300781 1074.617188 343.484375 C 1073.203125 240.390625 1071.96875 140.261719 1071.800781 46.582031 L 920.277344 46.859375 L 920.289062 52.992188 C 920.289062 52.992188 918.4375 209.292969 918.582031 287.410156 C 917.039062 287.410156 903.425781 272.800781 903.425781 272.800781 C 852.046875 215.074219 829.824219 187.269531 774.398438 133.527344 L 740.777344 99.71875 C 740.777344 99.71875 706.980469 66.621094 685.339844 48.507812 C 683.960938 46.96875 666.027344 31.460938 666.027344 30.847656 L 568.835938 162.28125 C 570.914062 163.679688 572.699219 165.261719 574.253906 167.175781 C 574.253906 167.175781 623.835938 212.898438 645.796875 234.132812 C 645.796875 234.132812 785.128906 389.589844 864.761719 454.816406 C 809.453125 504.035156 742.449219 550.335938 695 606.960938 C 642.292969 669.886719 563.113281 771.816406 515.417969 838.617188 L 637.9375 944.59375 C 714.082031 838.464844 816.992188 712.171875 915.960938 626.851562 C 912.339844 737.328125 914.878906 938.667969 915.082031 1049.152344 L 1077.070312 1048.855469 C 1080.609375 887.09375 1079.433594 712.835938 1077.296875 540.847656 C 1084.136719 550.78125 1097.445312 568.5 1097.445312 568.5 C 1098.585938 569.675781 1107.898438 585.835938 1111.449219 590.417969 L 1128.960938 620.375 L 1224.691406 786.539062 C 1241.425781 815.96875 1284.574219 889.609375 1285.304688 890.417969 L 1404.582031 820.828125 C 1403.347656 817.566406 1401.8125 815.992188 1400.632812 813.410156 "/></symbol><symbol id="gk-logo" viewBox="0 120 1000 380"><path d="m207.58,224.07c-.71-8.13-1.16-17.65-1.93-25.78-.18-1.81-2.04-14.65-2.04-14.65-4.6.89-9.48.96-14.14,1.34-8.61.71-20.13.66-29.44,1.56,0,0-.01,2.84-.02,3.84,0,0-6.76-1.01-7.61-1.17-4.79-.92-9.41-2.22-14.28-2.64-11.35-1.02-23.31-.35-34.38,2.4-7.71,2.21-15.03,4.93-21.02,10.42-5.45,5.05-11.61,11.46-14.91,18.2-3.73,7.65-5.91,16.51-7.67,24.76-2.13,9.89-3.16,20.01-3.09,30.15.09,10.1,1.14,20.18,4.1,29.86,2.2,7.23,20.38,34.42,27.07,39.22,6.14,4.43,13.9,7.42,21.18,9.4,9.68,2.63,20.44,3.72,30.47,3.01,4.82-.36,9.47-2.24,14.08-3.57,1.04-.28,15.43-4.52,15.42-4.1-.11,2.29.06,10.08-.11,12.35-.56,7.57.58,12.64-.19,20.21-.75,7.27-3.58,22.77-7.39,29.47,0,0-14.8,12.96-21.81,13.64-3.72.36-16.04.18-19.44-1.67-3.46-1.87-10.06-8.24-12.24-11.34l-8.09-13.54-3.95-17.23c-.74-5.37-2.85-16.88-2.85-16.88-11.8,1.33-18.75.43-30.49,2.29-1.3.19-5.54.15-5.4,1.8.36,4.21.97,8.4,1.51,12.58.94,7.43,4.77,31.02,6.7,34.91,2.89,7.54,8.68,14.38,13.42,20.77,5.4,7.45,10.5,14.98,18.6,19.71,5.83,3.69,10.73,4.9,17.43,5.59,8.16.85,20.29,4.2,28.27,2.28,16.52-3.92,23.26-8.66,34.19-17.11,5.66-4.42,10.21-10.98,14.65-16.73,4.25-5.49,10.1-17.95,11.28-24.74,1.96-11.51,1.84-14.84,2.62-26.51,1.87-28.4,2.51-56.9,3.13-85.36.53-23.15-.32-45.38-.55-48.16-.48-5.78-.23-5.81-1.07-18.59"/><path d="m346.45,343.62l3.96-4.8c2.77-3.98,6.1-7.33,9.68-13-8.89-7.45-16.61-13.92-25.48-21.36-2.37,1.87-1.05,2.94-9.11,10.46,0,0-4.5,5.3-12.63,6.75-7.19,1.29-23.28-1.49-23.28-1.49,0,0-10.45-4.16-14.85-6.47-5.87-3.09-10.41-8.35-14.31-13.14.3-.61-3.33-18.43-3.77-18.77v-.3c22.04.2,53.94-1.37,64.24-1.9,10.16-.49,17.54-6.53,17.54-6.53.26-.62,7.39-5.54,7.39-5.54l6.89-8.33s4.25-11.11,5.49-16.97c.04-4.09-4.33-28.64-7.3-31.53l-8.34-10.83c-4.07-4.22-16.79-12.37-21.9-14.49l-4.7-2.07s-7.75-.97-10.88-1.09c-8.75-.35-16.24-1.02-24.45-.22-3.9-.04-11.27,3.68-14.67,5.54-13.99,7.65-22.79,15-31.15,26.62,0,0-.55,2.08-.89,2.28,0,0-8.98,21.43-11.09,32.2-.1,23.71-5.68,49.08,8.69,70.33.9,1.34,10.54,14.53,16,18.38l6.5,3.78c24.15,14.38,61.16,23.07,86.89,6.32l5.53-3.84Z"/><path d="m454.31,219.08c-.48,0-4.68-4.61-4.68-4.61-15.84-18.19-22.68-26.94-39.79-43.91l-10.38-10.67s-10.43-10.45-17.13-16.17c-.43-.48-5.97-5.39-5.97-5.58l-30.78,40.68c.64.44,1.2.94,1.67,1.55,0,0,15.32,14.44,22.1,21.14,0,0,42.95,48.99,67.58,69.62-17.43,15.17-38.5,29.39-53.5,46.9-16.66,19.46-41.73,51-56.84,71.68l37.87,33.49c24.13-32.86,56.68-71.92,87.86-98.21-1.51,34.47-1.41,97.31-1.72,131.79l50.55.46c3.32-100.93.92-217.53,1.79-312.82l-47.29-.43-.02,1.91s-1.11,48.78-1.34,73.15"/><path d="m789.16,267.54c-.17-4.57-1.33-9.05-1.72-13.61-.42-4.93-1.16-9.58-2.98-14.19-2.68-6.77-6.23-13.32-11.31-18.59-2.73-2.84-5.97-4.91-9.29-6.98-4.39-2.77-8.91-5.42-13.55-7.76-4.02-2.02-8.6-3.03-13-3.81-9.07-1.64-18.2-1.94-27.4-1.82-7.73.09-15.66,1.79-22.88,4.58-9.16,3.53-18.25,8.87-23.84,17.18-5.78,8.62-10.47,17.99-13.67,27.87-3.35,10.32-5.34,20.92-4.76,31.81.55,10.67,3.37,21.15,8.64,30.45,2.09,3.68,4.54,7.14,7.34,10.31,1.23,1.41,2.43,3.25,3.88,4.4,1.65,1.34,3.31,2.67,4.97,4.01,3.11,2.48,6.39,4.53,9.77,6.68,6.11,3.86,13.41,5.26,20.4,6.81,3.68.8,7.16,1.09,10.9,1.12,4.97.05,9.95.17,14.93-.01,1.73-.05,3.27-.57,4.93-1.02,2.55-.73,5.13-1.44,7.66-2.16,2.49-.7,4.98-1.36,7.47-2.02,2.29-.62,4.76-1.02,6.89-2.09,2.32-1.16,4.6-2.42,6.8-3.8,4.26-2.6,8.51-5.32,12.32-8.59,3.74-3.21,6.28-7.09,8.73-11.32,2.09-3.64,4.08-7.36,5.93-11.15,1.44-2.92,2.71-5.83,3.2-9.07,1.39-9.06-.07-18.17-.36-27.23-.19-4.72.14,4.67,0,0"/><path d="m941.76,257.47c-2.45-6.21-3.26-12.6-6.46-18.65-3.78-7.07-8.81-13.36-15.66-17.97-27.53-15.94-63.84-21.97-92.42-1.73l-9.82,9-.67,1.04c-9.41,13.66-14.11,31.8-15.18,39.89-.86,6.55.34,13.7,1.19,20.22,1.32,9.81,5.22,14.88,7.89,22,3.24,5.25,6.67,10.34,10.66,15.12,4.71,5.58,9.66,8.57,16.33,11.72,4.57,2.15,9.29,4.5,14.18,5.93,2.72.82,6.68,2.61,9.57,2.44,13.11,1.69,26.15,2.91,38.78-1.62,9.15-3.29,16.58-7.69,22.46-15.24,4.62-5.88,9.18-12.13,12.55-18.77,3.51-6.87,4.58-14.38,5.84-21.81,1.02-5.94,1.91-11.54,1.9-17.59.01-2.86.15-5.75,0-8.61-.09-1.86-1.04-3.61-1.13-5.38-.2-.51.03.54,0,0"/><path d="m670.93,370.77c-11.81-21.31-45.82-82.03-45.82-82.03,0,0-10.03-15.43-10.49-16.29-3.37-4.52-5.9-9.43-9.45-13.87,7.81-7.72,9.88-10.03,9.88-10.03l13.81-14.33c5.13-5.17,10.64-10.25,16.39-14.66.24-.24,5.1-5,5.1-5,0,0,8.08-6.67,11.29-10.01l-29.31-32.05c-2.54,2.42-11.3,10.01-11.3,10.01,0,0-4.92,4.82-5.53,5.4l-13.4,11.76s-25.51,27.57-36.54,38.83c.02-2.31-1.18-26.35-1.18-26.35-.89-21.79-.61-44.77-1.5-57.29l-44.8-.41c-1.74,18.72,1.65,99.2,1.64,100.4,0,0-.1,87.1-.64,146.04l49.73.73c.33-35.51-2.21-67.74-1.88-103.27l7.6-8.29c2,3.04,6.42,9.1,6.42,9.1.35.37,3.18,5.46,4.27,6.9l5.33,9.43,29.14,52.28c5.09,9.26,18.23,32.43,18.46,32.69l37.53-21.19c-.37-1.02-.84-1.52-1.2-2.33,0,0-2.34-3.98-3.56-6.16"/></symbol></svg>
+<svg id="bgsplat" class="desat" aria-hidden="true"></svg>
 <div class="wrap">
   <header>
     <div>
@@ -160,7 +181,7 @@
       <p class="lede">Een minimalistische kunstenaar heeft alle kleuren van de wereld in een kluis in het magazijn verstopt. Elke kleurcode die een duo verdient, geeft een kamer haar kleur terug en levert een cijfer van de kluiscode op.</p>
     </div>
     <div>
-      <div class="codelabel">Kluiscode</div>
+      <div class="codelabel">Kluiscode · <span id="prog">0 van 6 kleuren terug</span></div>
       <div class="codebar" id="codebar"></div>
     </div>
   </header>
@@ -172,7 +193,7 @@
     <div id="msg">Kleurmusketier: typ de kleurcode in.</div>
   </form>
 
-  <div class="toolbar"><button id="distribute" type="button">Verdeel groepen</button></div>
+  <div class="toolbar"><div id="timer" class="timer">25:00</div><span class="sp"></span><button id="wheelBtn" type="button">Extra opdrachtje</button><button id="timerBtn" type="button">Start opdrachten</button><button id="distribute" type="button">Verdeel groepen</button></div>
   <div class="grid" id="upper"></div>
   <div class="two" id="lower"></div>
 
@@ -182,7 +203,7 @@
   </footer>
 </div>
 
-<div id="intro"><svg class="ibg" id="introbg" aria-hidden="true"></svg>
+<div id="intro"><svg class="ibg desat" id="introbg" aria-hidden="true"></svg>
   <div class="icard">
     <svg class="logo" aria-label="Gekkoo"><use href="#gk-logo"/></svg>
     <h2>Oei. Alle <span>kleur</span> is gestolen.</h2>
@@ -193,6 +214,7 @@
   </div>
 </div>
 <div id="pawns"></div>
+<div id="wheel"><div class="wb"><h3>Extra opdrachtje</h3><div class="wwrap"><svg id="wsvg" viewBox="-110 -110 220 220"></svg></div><div id="wres"></div><button class="wclose" id="wclose">sluiten</button></div></div>
 <div id="zoom"><div class="zbox"><div class="ztitle" id="ztitle"></div><div id="zsvg"></div></div></div>
 <div id="finale"><div class="box">
   <h3>DE KLUIS IS OPEN</h3>
@@ -328,7 +350,7 @@ function checkFinale(animate){
   if(!all) return;
   const code = TARGETS.map(t=>slots[t.slot].firstChild.textContent).join("");
   const vl=document.getElementById("vaultlabel"); if(vl){ vl.textContent="KLUIS OPEN · "+code; vl.setAttribute("fill","#FF3333"); }
-  if(animate){ document.getElementById("finalcode").textContent=code; document.getElementById("finale").classList.add("show"); bigSplash(); }
+  if(animate){ document.getElementById("finalcode").textContent=code; document.getElementById("finale").classList.add("show"); bigSplash(); splashSound(true); }
 }
 
 
@@ -354,6 +376,32 @@ function zoomTo(t, digit, col){
   clearTimeout(zoomTimer); zoomTimer=setTimeout(closeZoom, 4200);
 }
 
+
+// ---------- colour level ----------
+function setColorLevel(){
+  const n=TARGETS.filter(t=>state[t.slot]).length;
+  document.documentElement.style.setProperty('--sat', (n/TARGETS.length).toFixed(3));
+  const pg=document.getElementById('prog'); if(pg) pg.textContent = n===TARGETS.length ? 'alle kleuren terug!' : `${n} van ${TARGETS.length} kleuren terug`;
+}
+setColorLevel();
+
+// ---------- sound ----------
+let actx=null;
+function splashSound(big){
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const now=actx.currentTime, dur=big?1.2:0.55;
+    const buf=actx.createBuffer(1, actx.sampleRate*dur, actx.sampleRate), d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++){ const k=i/d.length; d[i]=(Math.random()*2-1)*Math.pow(1-k,2.2); }
+    const src=actx.createBufferSource(); src.buffer=buf;
+    const bp=actx.createBiquadFilter(); bp.type='lowpass'; bp.frequency.setValueAtTime(3200,now); bp.frequency.exponentialRampToValueAtTime(300,now+dur);
+    const g=actx.createGain(); g.gain.setValueAtTime(0.0001,now); g.gain.exponentialRampToValueAtTime(big?0.9:0.7,now+0.015); g.gain.exponentialRampToValueAtTime(0.0001,now+dur);
+    src.connect(bp).connect(g).connect(actx.destination); src.start(now);
+    const o=actx.createOscillator(), og=actx.createGain(); o.type='sine'; o.frequency.setValueAtTime(420,now); o.frequency.exponentialRampToValueAtTime(110,now+0.18);
+    og.gain.setValueAtTime(0.5,now); og.gain.exponentialRampToValueAtTime(0.0001,now+0.22); o.connect(og).connect(actx.destination); o.start(now); o.stop(now+0.25);
+  }catch(e){}
+}
+
 // restore
 TARGETS.forEach(t=>{ if(state[t.slot]) unlock(t, state[t.slot], false); });
 checkFinale(false);
@@ -361,7 +409,7 @@ checkFinale(false);
 // ---------- input ----------
 const inp=document.getElementById("hex"), sw=document.getElementById("swatch"), msg=document.getElementById("msg"), form=document.getElementById("form");
 const norm=v=>v.trim().replace(/^#/,"").toUpperCase();
-inp.addEventListener("input",()=>{ const v=norm(inp.value); inp.value=v.replace(/[^0-9A-F]/g,"").slice(0,6); sw.style.background = inp.value.length===6 ? "#"+inp.value : "#00205f"; });
+inp.addEventListener("input",()=>{ const v=norm(inp.value); inp.value=v.replace(/[^0-9A-F]/g,"").slice(0,6); sw.style.background = inp.value.length===6 ? "#"+inp.value : "var(--navy)"; });
 form.addEventListener("submit",e=>{
   e.preventDefault();
   const v=norm(inp.value);
@@ -370,11 +418,11 @@ form.addEventListener("submit",e=>{
   const t=TARGETS.find(q=>q.h===h);
   if(!t){ say("Die kleur opent geen enkele kamer. Probeer opnieuw!", false); return; }
   if(state[t.slot]){ say(`${t.name} is al ontgrendeld.`, null); return; }
-  state[t.slot]=v; save();
+  state[t.slot]=v; if(state.start){ state.times=state.times||{}; state.times[t.slot]=Date.now(); } save(); splashSound(); setColorLevel();
   const d=unlock(t,v,true);
   zoomTo(t, d, "#"+v);
   say(`${t.name} ontgrendeld! Cijfer ${t.slot+1} van de code is ${d}.`, true, "#"+v);
-  inp.value=""; sw.style.background="#00205f";
+  inp.value=""; sw.style.background="var(--navy)";
   setTimeout(()=>checkFinale(true), 4800);
 });
 function say(text, ok, col){
@@ -406,7 +454,7 @@ TEAMS.forEach((m,i)=>{
   const d=document.createElement("div"); d.className="team";
   const ns=m.map(n=>n?n:'<span class="open">vrije plek</span>');
   const names = ns.length>2 ? ns.slice(0,-1).join(", ")+" &amp; "+ns.at(-1) : ns.join(" &amp; ");
-  d.innerHTML=`<svg fill="${TCOL[i]}"><use href="#${ICONS[i%4]}"/></svg><div><div class="tn">${m.length>2?"Trio":"Duo"} ${i+1}</div><div class="tp">${names}</div><div class="tr">${TROOM[i]}</div></div>`;
+  d.innerHTML=`<svg class="desat" fill="${TCOL[i]}"><use href="#${ICONS[i%4]}"/></svg><div><div class="tn">${m.length>2?"Trio":"Duo"} ${i+1}</div><div class="tp">${names}</div><div class="tr">${TROOM[i]}</div></div>`;
   tw.appendChild(d);
 });
 (function(){ const s=document.getElementById("introbg"); s.setAttribute("viewBox","0 0 100 60"); s.setAttribute("preserveAspectRatio","xMidYMid slice"); addIcons(s,[0,0,100,60],7,8,26,HOUSE); s.querySelectorAll(".splat").forEach(n=>n.style.animation="none"); })();
@@ -416,13 +464,14 @@ document.getElementById("showintro").onclick=()=>intro.classList.remove("gone");
 
 
 // ---------- pawns ----------
+const TEAMTASK = ["De AI-poster","De Kleurenmenger","De Kleurenmachine","Het Pleidooi","De Voorwerpenregenboog","Het Kleurenmonument"];
 const TEAMROOM = ["Copykot","Keuken","Mini vergaderlokaal","Leefruimte","Onthaal","Klein vergaderlokaal"];
 const PAWNSPOT = {"Copykot":[2.2,10.25],"Keuken":[10.77,5.98],"Mini vergaderlokaal":[2.22,1.33],"Leefruimte":[8.83,2.9],"Onthaal":[48.4,6.3],"Klein vergaderlokaal":[2.26,5.4]};
 const HQPOS = [[5.3,4.3],[6.8,4.3],[8.3,4.3],[5.3,5.9],[6.8,5.9],[8.3,5.9]];
 const pawnLayer=document.getElementById("pawns");
 const pawns = TEAMS.map((m,i)=>{
   const p=document.createElement("div"); p.className="pawn home";
-  p.innerHTML=`<div class="pc" style="background:${TCOL[i]}"><b>${i+1}</b></div><div class="pn"><b>${m.filter(Boolean).join(" &amp; ")}</b><small>${TEAMROOM.at(i)}</small></div>`;
+  p.innerHTML=`<div class="pc" style="background:${TCOL[i]}"><b>${i+1}</b></div><div class="pn"><b>${m.filter(Boolean).join(" &amp; ")}</b><small>${TEAMROOM.at(i)} · ${TEAMTASK.at(i)}</small><i></i></div>`;
   pawnLayer.appendChild(p); return p;
 });
 function toPage(svg,x,y){
@@ -463,6 +512,51 @@ window.addEventListener("resize",()=>layoutPawns(false));
 window.addEventListener("load",()=>layoutPawns(false));
 if(window.ResizeObserver){ const ro=new ResizeObserver(()=>layoutPawns(false)); ro.observe(document.querySelector(".wrap")); Object.values(svgs).forEach(s=>ro.observe(s)); }
 if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=>layoutPawns(false));
+
+
+// ---------- timer ----------
+const DUR=25*60*1000;
+const timerEl=document.getElementById("timer"), timerBtn=document.getElementById("timerBtn");
+const fmt=ms=>{ const s=Math.max(0,Math.floor(ms/1000)); return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0"); };
+function slotOfTeam(i){ const tg=TARGETS.find(q=>q.name===TEAMROOM.at(i)); return tg?tg.slot:null; }
+function tick(){
+  if(!state.start){ timerEl.textContent=fmt(DUR); timerEl.className="timer"; timerBtn.textContent="Start opdrachten"; pawns.forEach(p=>{ p.querySelector(".pn i").textContent=""; }); return; }
+  const el=Date.now()-state.start, left=DUR-el;
+  timerEl.className="timer run"+(left<0?" late":"");
+  timerEl.innerHTML = left>=0 ? `${fmt(left)}<small>resterend</small>` : `+${fmt(-left)}<small>over tijd</small>`;
+  timerBtn.textContent="Timer resetten";
+  pawns.forEach((p,i)=>{ const sl=slotOfTeam(i), it=p.querySelector(".pn i"); const done=state.times && state.times[sl];
+    if(state[sl] && done){ it.textContent="klaar na "+fmt(done-state.start); it.className="done"; }
+    else if(state[sl]){ it.textContent="klaar"; it.className="done"; }
+    else { it.textContent="bezig · "+fmt(el); it.className=""; } });
+}
+let tArmed=false;
+timerBtn.onclick=()=>{
+  if(!state.start){ state.start=Date.now(); state.times={}; save(); tick(); return; }
+  if(!tArmed){ tArmed=true; timerBtn.textContent="Nog eens klikken om te resetten"; setTimeout(()=>{ tArmed=false; tick(); },3000); return; }
+  delete state.start; delete state.times; save(); tArmed=false; tick();
+};
+setInterval(tick,1000); tick();
+
+// ---------- extra opdrachtje wheel ----------
+const EXTRA=["Zoek binnen 1 minuut vijf voorwerpen in dezelfde kleur in de refter.","Beeld drie kleuren uit zonder te praten. De Kleurmusketiers raden.","Vorm met jullie lichamen een Gekkoo-symbool voor een foto.","Verzin in 1 minuut een kleurrijke yell voor Gekkoo en roep hem door de refter.","Plooi een papieren vliegtuig, kleur het en laat het minstens 3 meter ver vliegen."];
+const WCOL=["#FFCC33","#FF3333","#FF99CC","#479554","#60A5FA"];
+const wsvg=document.getElementById("wsvg");
+(function(){ const n=EXTRA.length, R=100;
+  for(let i=0;i<n;i++){ const a0=(i/n)*2*Math.PI-Math.PI/2, a1=((i+1)/n)*2*Math.PI-Math.PI/2;
+    const p=`M0 0 L${R*Math.cos(a0)} ${R*Math.sin(a0)} A${R} ${R} 0 0 1 ${R*Math.cos(a1)} ${R*Math.sin(a1)} Z`;
+    el("path",{d:p,fill:WCOL.at(i),stroke:"#fff","stroke-width":2},wsvg);
+    const am=(a0+a1)/2; const tx=el("text",{x:62*Math.cos(am),y:62*Math.sin(am)+9,"text-anchor":"middle","font-size":28,"font-weight":800,fill:"#00205f","font-family":"Poppins,sans-serif"},wsvg); tx.textContent=String(i+1); }
+  el("circle",{r:14,fill:"#fff"},wsvg); })();
+let wRot=0;
+document.getElementById("wheelBtn").onclick=()=>{
+  const W=document.getElementById("wheel"), res=document.getElementById("wres"); W.classList.add("show"); res.textContent="";
+  const n=EXTRA.length, pick=Math.floor(Math.random()*n);
+  const center=(pick+0.5)/n*360; wRot += 360*5 + ((360-center) - (wRot%360) + 360)%360;
+  wsvg.style.transform=`rotate(${wRot}deg)`;
+  setTimeout(()=>{ res.textContent=(pick+1)+". "+EXTRA.at(pick); splashSound(); },4100);
+};
+document.getElementById("wclose").onclick=()=>document.getElementById("wheel").classList.remove("show");
 
 // ---------- reset (spelleider) ----------
 let armed=false;
