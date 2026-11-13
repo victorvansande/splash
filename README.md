@@ -1,4 +1,4 @@
-# Operatie Spatkunst
+# Gekkoo for Color
 
 Spelsite voor de teambuilding bij Gekkoo vzw: duo's zoeken per kamer een geheime kleurcode. Elke juiste hex kleurt de kamer in op de plattegrond en levert een cijfer van de kluiscode op.
 
