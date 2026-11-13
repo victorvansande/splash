@@ -377,15 +377,16 @@ document.getElementById("closefin").onclick=()=>document.getElementById("finale"
 
 // ---------- intro ----------
 const TEAMS = [
-  ["Lies","Ouiam"], ["Annelies","Marki"], ["Aaron","Elke"], ["Sara Segers","Olaf"],
-  ["Joelle","Bouchra"], ["Sarade","Loes"]
+  ["Lies","Ouiam"], ["Annelies","Marki"], ["Aaron","Elke"], ["Sara","Olaf"],
+  ["Joelle","Bouchra"], ["Sarade","Loes","Segers"]
 ];
 const TCOL = ["#FFCC33","#FF3333","#FF99CC","#479554","#FFFFFF","#FFCC33","#FF99CC"];
 const tw=document.getElementById("teams");
 TEAMS.forEach((m,i)=>{
   const d=document.createElement("div"); d.className="team";
-  const names=m.map(n=>n?n:'<span class="open">vrije plek</span>').join(" &amp; ");
-  d.innerHTML=`<svg fill="${TCOL[i]}"><use href="#${ICONS[i%4]}"/></svg><div><div class="tn">Duo ${i+1}</div><div class="tp">${names}</div></div>`;
+  const ns=m.map(n=>n?n:'<span class="open">vrije plek</span>');
+  const names = ns.length>2 ? ns.slice(0,-1).join(", ")+" &amp; "+ns.at(-1) : ns.join(" &amp; ");
+  d.innerHTML=`<svg fill="${TCOL[i]}"><use href="#${ICONS[i%4]}"/></svg><div><div class="tn">${m.length>2?"Trio":"Duo"} ${i+1}</div><div class="tp">${names}</div></div>`;
   tw.appendChild(d);
 });
 (function(){ const s=document.getElementById("introbg"); s.setAttribute("viewBox","0 0 100 60"); s.setAttribute("preserveAspectRatio","xMidYMid slice"); addIcons(s,[0,0,100,60],7,8,26,HOUSE); s.querySelectorAll(".splat").forEach(n=>n.style.animation="none"); })();
