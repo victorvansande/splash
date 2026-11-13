@@ -93,18 +93,20 @@
   #intro .note { color:var(--muted); font-size:13px; margin-left:14px; }
 
   #pawns { position:absolute; left:0; top:0; width:0; height:0; z-index:5; pointer-events:none; }
-  .pawn { position:absolute; left:0; top:0; display:flex; flex-direction:row; align-items:center; gap:6px; transition:transform 1.5s cubic-bezier(.45,0,.2,1); will-change:transform; }
-  .pawn .pc { width:34px; height:34px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); display:grid; place-items:center; box-shadow:0 3px 0 rgba(0,0,0,.25); border:2.5px solid #00205f; }
+  .pawn { position:absolute; left:0; top:0; width:max-content; display:flex; flex-direction:column; align-items:center; gap:5px; transition:transform 1.5s cubic-bezier(.45,0,.2,1); will-change:transform; }
+  .pawn .pc { width:34px; height:34px; border-radius:50% 50% 50% 0; transform:rotate(-45deg); display:grid; place-items:center; box-shadow:0 3px 0 rgba(0,0,0,.25); border:2.5px solid #00205f; flex:none; }
   .pawn .pc b { transform:rotate(45deg); font-weight:800; font-size:15px; color:#00205f; }
-  .pawn .pn { background:#00205f; color:#fff; font-size:11.5px; font-weight:700; padding:2px 8px; border-radius:999px; white-space:nowrap; transition:opacity .4s; box-shadow:0 2px 0 rgba(0,0,0,.2); }
-  .pawn.home .pn { opacity:0; }
-  .pawn.left { flex-direction:row-reverse; }
+  .pawn .pn { background:#00205f; color:#fff; padding:3px 9px 4px; border-radius:10px; white-space:nowrap; text-align:center; line-height:1.15; box-shadow:0 2px 0 rgba(0,0,0,.2); }
+  .pawn .pn b { display:block; font-size:11.5px; font-weight:700; }
+  .pawn .pn small { display:block; font-size:9.5px; font-weight:600; color:var(--geel); }
+  .pawn.home .pn { display:none; }
   .pawn.hop .pc { animation:hop .5s ease-out; }
   @keyframes hop { 40% { margin-top:-14px } }
+  text.occ { opacity:0; transition:opacity .4s; }
   .toolbar { display:flex; justify-content:flex-end; gap:10px; margin:-8px 0 14px; }
   .toolbar button { font:700 15px var(--fb); background:transparent; color:var(--ink); border:2px solid var(--geel); border-radius:999px; padding:9px 18px; cursor:pointer; }
   .toolbar button:hover { background:var(--geel); color:var(--bg); }
-  @media (max-width:640px){ .pawn { gap:3px; } .pawn .pc { width:24px; height:24px; border-width:2px; } .pawn .pc b { font-size:11px; } .pawn .pn { font-size:9.5px; padding:1px 6px; } .toolbar { margin:0 0 12px; } .toolbar button { width:100%; } }
+  @media (max-width:640px){ .pawn { gap:3px; } .pawn .pc { width:22px; height:22px; border-width:2px; } .pawn .pc b { font-size:10px; } .pawn .pn { padding:1px 6px 2px; } .pawn .pn b { font-size:9px; } .pawn .pn small { font-size:7.5px; } .toolbar { margin:0 0 12px; } .toolbar button { width:100%; } }
   footer { margin-top:18px; color:var(--muted); font-size:12px; display:flex; justify-content:space-between; }
   footer button { background:none; border:0; color:var(--line); cursor:pointer; font:inherit; }
   footer button:hover { color:var(--muted); }
@@ -415,39 +417,47 @@ document.getElementById("showintro").onclick=()=>intro.classList.remove("gone");
 
 // ---------- pawns ----------
 const TEAMROOM = ["Copykot","Keuken","Mini vergaderlokaal","Leefruimte","Onthaal","Klein vergaderlokaal"];
-const PAWNSPOT = {"Copykot":[0.75,10.85],"Keuken":[11.85,7.7,1],"Mini vergaderlokaal":[0.75,2.0],"Leefruimte":[5.9,4.3],"Onthaal":[44.6,6.7],"Klein vergaderlokaal":[0.75,7.4]};
+const PAWNSPOT = {"Copykot":[2.2,10.25],"Keuken":[10.77,5.98],"Mini vergaderlokaal":[2.22,1.33],"Leefruimte":[8.83,2.9],"Onthaal":[48.4,6.3],"Klein vergaderlokaal":[2.26,5.4]};
 const HQPOS = [[5.3,4.3],[6.8,4.3],[8.3,4.3],[5.3,5.9],[6.8,5.9],[8.3,5.9]];
 const pawnLayer=document.getElementById("pawns");
 const pawns = TEAMS.map((m,i)=>{
   const p=document.createElement("div"); p.className="pawn home";
-  p.innerHTML=`<div class="pc" style="background:${TCOL[i]}"><b>${i+1}</b></div><div class="pn">${m.filter(Boolean).join(" & ")}</div>`;
+  p.innerHTML=`<div class="pc" style="background:${TCOL[i]}"><b>${i+1}</b></div><div class="pn"><b>${m.filter(Boolean).join(" &amp; ")}</b><small>${TEAMROOM.at(i)}</small></div>`;
   pawnLayer.appendChild(p); return p;
 });
-function toPage(svg,x,y){ const m=svg.getScreenCTM(); if(!m) return null; const pt=svg.createSVGPoint(); pt.x=x; pt.y=y; const q=pt.matrixTransform(m); return {x:q.x+window.scrollX, y:q.y+window.scrollY}; }
+function toPage(svg,x,y){
+  // map viewBox coords -> pawn layer coords via bounding rects (robust to page zoom, OS scaling and scaled iframes)
+  const vb=svg.viewBox.baseVal, r=svg.getBoundingClientRect(), L=pawnLayer.getBoundingClientRect();
+  if(!r.width || !vb || !vb.width) return null;
+  const de=document.documentElement, s=(de.getBoundingClientRect().width / de.offsetWidth) || 1;
+  const k=Math.min(r.width/vb.width, r.height/vb.height);
+  const ox=r.left + (r.width - vb.width*k)/2, oy=r.top + (r.height - vb.height*k)/2;
+  return {x:(ox + (x-vb.x)*k - L.left)/s, y:(oy + (y-vb.y)*k - L.top)/s};
+}
 function pawnTarget(i){
   if(!state.verdeeld){ const [x,y]=HQPOS.at(i); return toPage(svgs["verdiep-2"],x,y); }
   const t=TARGETS.find(q=>q.name===TEAMROOM.at(i)); if(!t) return null;
-  const an=PAWNSPOT[t.name]; const q=toPage(svgs[t.floor], an[0], an[1]); if(q) q.left=!!an[2]; return q;
+  const an=PAWNSPOT[t.name]; return toPage(svgs[t.floor], an[0], an[1]);
 }
 function layoutPawns(animate){
   pawns.forEach((p,i)=>{
     const pos=pawnTarget(i); if(!pos) return;
     if(!animate){ p.style.transition="none"; }
-    const left = state.verdeeld && pos.left; p.classList.toggle("left", left);
-    p.style.transform = left ? `translate(${pos.x}px, ${pos.y}px) translate(calc(-100% + 17px), -50%)` : `translate(${pos.x}px, ${pos.y}px) translate(-17px, -50%)`;
     p.classList.toggle("home", !state.verdeeld);
+    p.style.transform = `translate(${pos.x}px, ${pos.y}px) translate(-50%, -50%)`;
     if(!animate){ void p.offsetWidth; p.style.transition=""; }
   });
 }
+function markOccupied(){ TEAMROOM.forEach(n=>{ const tg=TARGETS.find(q=>q.name===n); if(tg) document.querySelectorAll(`#upper text[data-target="${tg.slot}"], #lower text[data-target="${tg.slot}"]`).forEach(e=>e.classList.toggle("occ", !!state.verdeeld)); }); }
 const distBtn=document.getElementById("distribute");
 function setBtn(){ distBtn.textContent = state.verdeeld ? "Terug naar HQ" : "Verdeel groepen"; }
 distBtn.onclick=()=>{
   state.verdeeld=!state.verdeeld; save(); setBtn();
   pawns.forEach((p,i)=>{ p.style.transitionDelay=(i*0.18)+"s"; p.classList.remove("hop"); void p.offsetWidth; setTimeout(()=>p.classList.add("hop"), i*180); });
-  layoutPawns(true);
+  layoutPawns(true); markOccupied();
   setTimeout(()=>pawns.forEach(p=>p.style.transitionDelay="0s"), 2800);
 };
-setBtn();
+setBtn(); markOccupied();
 requestAnimationFrame(()=>layoutPawns(false));
 window.addEventListener("resize",()=>layoutPawns(false));
 window.addEventListener("load",()=>layoutPawns(false));
