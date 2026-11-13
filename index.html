@@ -86,6 +86,7 @@
   .team svg { width:38px; height:38px; flex:none; }
   .team .tn { font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); }
   .team .tp { font-weight:700; font-size:18px; line-height:1.25; }
+  .team .tr { font-size:13px; color:var(--geel); font-weight:600; margin-top:2px; }
   .team .open { color:var(--muted); font-weight:400; font-style:italic; }
   #intro .go { font-family:var(--fh); font-size:34px; border:0; border-radius:14px; padding:12px 38px; background:var(--geel); color:var(--bg); cursor:pointer; }
   #intro .go:hover { transform:rotate(-2deg) scale(1.03); }
@@ -380,13 +381,14 @@ const TEAMS = [
   ["Segers","Lies"], ["Sara","Sarade"], ["Ouiam","Joelle"],
   ["Bouchra","Olaf"], ["Aaron","Elke"], ["Marki","Annelies"]
 ];
+const TROOM = ["Copykot · 1ste verdiep","Keuken · 2de verdiep","Mini vergaderlokaal · 3de verdiep","Leefruimte · 3de verdiep","Onthaal · gelijkvloers","Klein vergaderlokaal · 2de verdiep"];
 const TCOL = ["#FFCC33","#FF3333","#FF99CC","#479554","#FFFFFF","#FFCC33","#FF99CC"];
 const tw=document.getElementById("teams");
 TEAMS.forEach((m,i)=>{
   const d=document.createElement("div"); d.className="team";
   const ns=m.map(n=>n?n:'<span class="open">vrije plek</span>');
   const names = ns.length>2 ? ns.slice(0,-1).join(", ")+" &amp; "+ns.at(-1) : ns.join(" &amp; ");
-  d.innerHTML=`<svg fill="${TCOL[i]}"><use href="#${ICONS[i%4]}"/></svg><div><div class="tn">${m.length>2?"Trio":"Duo"} ${i+1}</div><div class="tp">${names}</div></div>`;
+  d.innerHTML=`<svg fill="${TCOL[i]}"><use href="#${ICONS[i%4]}"/></svg><div><div class="tn">${m.length>2?"Trio":"Duo"} ${i+1}</div><div class="tp">${names}</div><div class="tr">${TROOM[i]}</div></div>`;
   tw.appendChild(d);
 });
 (function(){ const s=document.getElementById("introbg"); s.setAttribute("viewBox","0 0 100 60"); s.setAttribute("preserveAspectRatio","xMidYMid slice"); addIcons(s,[0,0,100,60],7,8,26,HOUSE); s.querySelectorAll(".splat").forEach(n=>n.style.animation="none"); })();
