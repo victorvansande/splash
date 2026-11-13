@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Operatie Spatkunst – HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#003399; --panel:#0b3da6; --line:rgba(255,255,255,.22); --ink:#ffffff; --muted:#c3d0f2; --room:#ffffff; --wall:#00205f; --geel:#FFCC33; --rood:#FF3333; --roze:#FF99CC; --groen:#479554;
+  --fb:"Sofia Pro","SofiaPro","Poppins",system-ui,sans-serif; --fh:"ProvidenceSansPro","Providence Sans Pro","Patrick Hand","Sofia Pro","Poppins",sans-serif; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--fb); }
+  body { min-height:100vh; overflow-x:hidden; }
+  #bgsplat { position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.22; }
+  .logo { width:190px; height:72px; fill:#fff; display:block; margin-bottom:10px; }
+  .wrap { position:relative; z-index:1; max-width:1500px; margin:0 auto; padding:22px 28px 40px; }
+  header { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; flex-wrap:wrap; }
+  h1 { font-family:var(--fh); font-weight:400; font-size:clamp(40px,5vw,72px); line-height:.95; margin:0; letter-spacing:-.02em; }
+  h1 span { color:var(--geel); }
+  h1 span b { font-weight:inherit; }
+  .lede { color:var(--muted); margin:16px 0 0; max-width:640px; font-size:15px; line-height:1.45; }
+  /* code bar */
+  .codebar { display:flex; gap:10px; align-items:center; }
+  .slot { width:62px; height:80px; border-radius:14px; border:2px dashed rgba(255,255,255,.35); display:grid; place-items:center; font-family:var(--fb); font-size:44px; font-weight:800; color:rgba(255,255,255,.35); background:var(--panel); transition:all .5s cubic-bezier(.2,1.6,.4,1); position:relative; }
+  .slot small { position:absolute; bottom:-20px; font-size:10px; font-family:var(--fb); font-weight:600; color:var(--muted); white-space:nowrap; letter-spacing:.02em; }
+  .slot.on { border-style:solid; color:#fff; transform:rotate(-3deg) scale(1.04); text-shadow:0 2px 0 rgba(0,0,0,.25); }
+  .slot.on:nth-child(even){ transform:rotate(3deg) scale(1.04); }
+  .codelabel { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.12em; margin-bottom:8px; }
+  /* input */
+  .entry { margin:30px 0 22px; background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:16px 18px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
+  .swatch { width:64px; height:64px; border-radius:50%; background:#00205f; border:3px solid var(--line); flex:none; transition:background .2s; }
+  .hexbox { display:flex; align-items:center; background:#00205f; border:2px solid var(--line); border-radius:12px; padding:0 14px; font-family:var(--fb); font-size:34px; font-weight:700; }
+  .hexbox span { color:var(--muted); }
+  .hexbox input { background:transparent; border:0; outline:0; color:var(--ink); font:inherit; width:170px; text-transform:uppercase; letter-spacing:.06em; padding:8px 4px; }
+  .entry button { font-family:var(--fh); font-size:28px; font-weight:400; border:0; border-radius:12px; padding:12px 28px; background:var(--geel); color:var(--bg); cursor:pointer; }
+  .entry button:active { transform:scale(.97); }
+  #msg { font-size:18px; font-weight:600; flex:1; min-width:220px; }
+  .shake { animation:shake .4s; }
+  @keyframes shake { 20%,60%{transform:translateX(-8px)} 40%,80%{transform:translateX(8px)} }
+  /* plans */
+  .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:14px 16px 10px; }
+  .card h2 { font-family:var(--fb); font-size:20px; margin:0; }
+  .card .sub { color:var(--muted); font-size:12px; margin:2px 0 6px; }
+  .wide { grid-column:1 / -1; }
+  .two { display:grid; grid-template-columns:1.4fr 1fr; gap:18px; margin-top:18px; }
+  svg.plan { width:100%; height:auto; display:block; overflow:visible; }
+  .rl { font-family:var(--fb); font-weight:600; fill:#4b4560; }
+  .rl.lit { fill:#fff; paint-order:stroke; stroke:rgba(0,0,0,.55); stroke-width:.06; font-weight:800; }
+  .hq { fill:#FF3333; font-family:var(--fb); font-weight:800; }
+  .splat { transform-box:fill-box; transform-origin:center; animation:pop .55s cubic-bezier(.2,1.8,.4,1) both; }
+  @keyframes pop { from { transform:scale(0); opacity:0 } to { transform:scale(1); opacity:1 } }
+  .target { transition:fill .6s; }
+  .vault { font-family:var(--fb); font-weight:800; }
+  /* finale */
+  #finale { position:fixed; inset:0; z-index:20; display:none; place-items:center; background:rgba(0,32,95,.86); }
+  #finale.show { display:grid; }
+  #finale .box { text-align:center; position:relative; z-index:1; background:rgba(0,51,153,.9); padding:28px 44px; border-radius:24px; }
+  #finale h3 { font-family:var(--fh); font-weight:400; color:var(--geel); font-size:clamp(40px,7vw,110px); margin:0; line-height:.9; }
+  #finale p { font-size:22px; color:var(--muted); }
+  #finale .big { font-family:var(--fb); font-size:clamp(50px,9vw,140px); font-weight:800; letter-spacing:.12em; }
+  #finale button { margin-top:10px; font:600 15px var(--fb); background:transparent; color:var(--muted); border:1px solid var(--line); border-radius:10px; padding:8px 14px; cursor:pointer; }
+
+  #zoom { position:fixed; inset:0; z-index:15; display:grid; place-items:center; background:rgba(0,32,95,0); transition:background .4s; pointer-events:none; }
+  #zoom.show { background:rgba(0,32,95,.88); pointer-events:auto; cursor:pointer; }
+  #zoom .zbox { width:min(92vw,1400px); transform:scale(.35); opacity:0; transition:transform .9s cubic-bezier(.2,1.2,.3,1), opacity .4s; text-align:center; }
+  #zoom.show .zbox { transform:scale(1); opacity:1; }
+  #zoom svg { width:100%; height:72vh; display:block; background:#0b3da6; border-radius:24px; border:3px solid var(--line); }
+  #zoom .ztitle { font-family:var(--fh); font-weight:400; font-size:clamp(32px,5vw,72px); margin:0 0 14px; line-height:1; }
+  #zoom .zdigit { display:inline-block; margin-left:16px; padding:2px 22px; border-radius:16px; color:#fff; transform:rotate(-4deg); }
+
+  #intro { position:fixed; inset:0; z-index:30; background:var(--bg); display:grid; place-items:center; overflow:auto; transition:opacity .5s, transform .5s; }
+  #intro.gone { opacity:0; transform:scale(1.04); pointer-events:none; }
+  #intro .ibg { position:fixed; inset:0; width:100%; height:100%; opacity:.18; }
+  #intro .icard { position:relative; z-index:1; max-width:1100px; width:92vw; padding:30px 10px; }
+  #intro .logo { width:240px; height:90px; }
+  #intro h2 { font-family:var(--fh); font-weight:400; font-size:clamp(46px,6.5vw,96px); line-height:.95; margin:6px 0 18px; }
+  #intro h2 span { color:var(--geel); }
+  #intro .story { font-size:clamp(18px,1.7vw,24px); line-height:1.5; max-width:820px; margin:0 0 26px; }
+  #intro .story b { color:var(--geel); font-weight:700; }
+  #intro h3 { font-family:var(--fh); font-weight:400; font-size:30px; margin:0 0 12px; }
+  .teams { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px; margin-bottom:28px; }
+  .team { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:12px 14px; display:flex; gap:12px; align-items:center; }
+  .team svg { width:38px; height:38px; flex:none; }
+  .team .tn { font-size:12px; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); }
+  .team .tp { font-weight:700; font-size:18px; line-height:1.25; }
+  .team .open { color:var(--muted); font-weight:400; font-style:italic; }
+  #intro .go { font-family:var(--fh); font-size:34px; border:0; border-radius:14px; padding:12px 38px; background:var(--geel); color:var(--bg); cursor:pointer; }
+  #intro .go:hover { transform:rotate(-2deg) scale(1.03); }
+  #intro .note { color:var(--muted); font-size:13px; margin-left:14px; }
+  footer { margin-top:18px; color:var(--muted); font-size:12px; display:flex; justify-content:space-between; }
+  footer button { background:none; border:0; color:var(--line); cursor:pointer; font:inherit; }
+  footer button:hover { color:var(--muted); }
+
+  @media (max-width:640px){
+    .wrap { padding:16px 14px 30px; }
+    header { flex-direction:column; align-items:stretch; gap:14px; }
+    .logo { width:130px; height:50px; }
+    h1 { font-size:40px; }
+    .lede { font-size:14px; }
+    .codebar { gap:5px; justify-content:space-between; }
+    .slot { width:auto; flex:1; height:58px; font-size:30px; border-radius:10px; }
+    .slot small { display:none; }
+    .entry { margin:18px 0 16px; padding:12px; gap:10px; }
+    .swatch { width:46px; height:46px; }
+    .hexbox { font-size:26px; flex:1; min-width:0; }
+    .hexbox input { width:100%; min-width:0; }
+    .entry button { width:100%; font-size:26px; padding:10px; }
+    #msg { font-size:15px; min-width:0; flex-basis:100%; }
+    .grid, .two { gap:12px; }
+    .two { margin-top:12px; }
+    .card { padding:10px 10px 6px; border-radius:14px; }
+    #zoom .zbox { width:96vw; }
+    #zoom svg { height:58vh; border-radius:16px; }
+    #zoom .ztitle { font-size:34px; }
+    #intro { place-items:start center; }
+    #intro .icard { padding:18px 4px 30px; }
+    #intro .logo { width:150px; height:56px; }
+    #intro h2 { font-size:44px; }
+    #intro .story { font-size:16px; }
+    .teams { grid-template-columns:1fr; gap:8px; }
+    .team { padding:9px 12px; }
+    .team .tp { font-size:16px; }
+    #intro .go { width:100%; font-size:30px; }
+    #intro .note { display:none; }
+    #finale .box { padding:20px; margin:0 12px; }
+    footer { flex-direction:column; gap:6px; }
+  }
+  @media (max-width:900px){ .grid{grid-template-columns:1fr} .two{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0" aria-hidden="true"><symbol id="ic-streep" viewBox="240 330 1440 420"><path d="M 746.292969 422.523438 C 733.875 422.542969 604.613281 430.402344 604.613281 430.402344 C 487.484375 436.5 363.828125 436.355469 296.535156 441.867188 L 296.976562 682.835938 C 397.753906 691.074219 830.433594 668.109375 836.910156 668.097656 C 836.910156 668.097656 1305.425781 663.488281 1622.453125 662.910156 L 1623.464844 395.378906 C 1432.421875 395.730469 1259.210938 411.246094 1068.113281 411.597656 "/></symbol><symbol id="ic-boog" viewBox="360 100 1200 880"><path d="M 687.511719 917.273438 C 691.015625 862.023438 682.265625 825.195312 687.242188 769.964844 C 692.09375 716.9375 711.496094 603.691406 738.730469 554.542969 C 738.730469 554.542969 845.5625 458.917969 896.628906 453.371094 C 923.722656 450.429688 1013.53125 450.785156 1038.46875 464 C 1063.835938 477.363281 1112.457031 523.269531 1128.613281 545.671875 L 1188.683594 643.734375 L 1218.832031 768.992188 C 1224.65625 808.066406 1240.941406 891.832031 1240.941406 891.832031 C 1326.867188 881.160156 1377.601562 887.175781 1463.011719 872.675781 C 1472.460938 871.164062 1503.367188 871.109375 1502.242188 859.140625 C 1499.273438 828.5 1494.492188 797.972656 1490.195312 767.558594 C 1482.722656 713.507812 1452.957031 541.824219 1438.601562 513.617188 C 1416.949219 458.882812 1374.148438 409.507812 1339.101562 363.332031 C 1299.132812 309.488281 1261.402344 254.972656 1201.917969 221.164062 C 1159.15625 194.765625 1123.285156 186.332031 1074.40625 181.828125 C 1014.859375 176.296875 926.164062 152.835938 868.1875 167.449219 C 748.085938 197.347656 699.332031 232.449219 620.339844 294.894531 C 579.40625 327.542969 546.773438 375.726562 514.898438 418.027344 C 484.34375 458.421875 442.738281 549.652344 434.683594 599.289062 C 421.300781 683.332031 422.464844 707.570312 417.726562 792.699219 "/></symbol><symbol id="ic-cirkel" viewBox="420 0 1080 1080"><path d="M 1431.523438 496.003906 C 1430.050781 465.925781 1422.136719 436.5 1419.214844 406.511719 C 1416.101562 374.09375 1410.914062 343.53125 1398.59375 313.304688 C 1380.429688 268.933594 1356.628906 226.058594 1322.757812 191.722656 C 1304.605469 173.214844 1283.070312 159.839844 1261.097656 146.433594 C 1231.996094 128.523438 1202.050781 111.386719 1171.335938 96.308594 C 1144.742188 83.265625 1114.464844 76.996094 1085.453125 72.15625 C 1025.59375 62.023438 965.484375 60.699219 904.917969 62.128906 C 854.003906 63.265625 801.964844 75.035156 754.574219 93.949219 C 694.507812 117.832031 635.070312 153.65625 598.816406 208.769531 C 561.398438 265.949219 531.164062 327.984375 510.816406 393.277344 C 489.515625 461.457031 477.175781 531.445312 481.78125 603.085938 C 486.175781 673.292969 505.5 742.109375 540.871094 802.980469 C 554.886719 827.0625 571.257812 849.640625 589.921875 870.324219 C 598.101562 879.5 606.191406 891.566406 615.785156 899.023438 C 626.765625 907.742188 637.78125 916.34375 648.832031 925.0625 C 669.511719 941.152344 691.230469 954.425781 713.628906 968.351562 C 754.148438 993.347656 802.3125 1001.996094 848.4375 1011.75 C 872.742188 1016.765625 895.667969 1018.375 920.269531 1018.332031 C 952.980469 1018.273438 985.8125 1018.734375 1018.570312 1017.15625 C 1029.976562 1016.695312 1040.042969 1013.136719 1050.984375 1010.113281 C 1067.710938 1005.121094 1084.640625 1000.285156 1101.265625 995.324219 C 1117.621094 990.554688 1133.945312 985.988281 1150.300781 981.488281 C 1165.324219 977.242188 1181.582031 974.445312 1195.488281 967.199219 C 1210.691406 959.359375 1225.574219 950.933594 1239.980469 941.660156 C 1267.867188 924.199219 1295.65625 906.027344 1320.5 884.21875 C 1344.90625 862.800781 1361.359375 837.058594 1377.199219 809.058594 C 1390.71875 784.957031 1403.515625 760.285156 1415.460938 735.210938 C 1424.722656 715.859375 1432.90625 696.613281 1435.867188 675.285156 C 1444.378906 615.511719 1434.097656 555.621094 1431.523438 496.003906 C 1429.949219 464.933594 1432.8125 526.742188 1431.523438 496.003906 "/></symbol><symbol id="ic-ster" viewBox="450 0 1020 1080"><path d="M 1400.632812 813.410156 C 1400.632812 813.410156 1392.949219 800.777344 1388.945312 793.835938 C 1350.132812 726.09375 1238.4375 533.105469 1238.4375 533.105469 C 1238.4375 533.105469 1205.597656 484.144531 1204.082031 481.410156 C 1193.085938 467.0625 1184.765625 451.460938 1173.167969 437.414062 C 1197.835938 412.308594 1204.363281 404.839844 1204.363281 404.839844 L 1247.953125 358.308594 C 1264.167969 341.523438 1281.5625 324.976562 1299.800781 310.597656 C 1300.566406 309.828125 1315.914062 294.335938 1315.914062 294.335938 C 1315.914062 294.335938 1341.496094 272.609375 1351.617188 261.746094 L 1256.253906 160.40625 C 1248.214844 168.265625 1220.511719 192.984375 1220.511719 192.984375 C 1220.511719 192.984375 1204.96875 208.660156 1203.050781 210.523438 L 1160.667969 248.808594 C 1160.667969 248.808594 1112.554688 302.300781 1074.617188 343.484375 C 1073.203125 240.390625 1071.96875 140.261719 1071.800781 46.582031 L 920.277344 46.859375 L 920.289062 52.992188 C 920.289062 52.992188 918.4375 209.292969 918.582031 287.410156 C 917.039062 287.410156 903.425781 272.800781 903.425781 272.800781 C 852.046875 215.074219 829.824219 187.269531 774.398438 133.527344 L 740.777344 99.71875 C 740.777344 99.71875 706.980469 66.621094 685.339844 48.507812 C 683.960938 46.96875 666.027344 31.460938 666.027344 30.847656 L 568.835938 162.28125 C 570.914062 163.679688 572.699219 165.261719 574.253906 167.175781 C 574.253906 167.175781 623.835938 212.898438 645.796875 234.132812 C 645.796875 234.132812 785.128906 389.589844 864.761719 454.816406 C 809.453125 504.035156 742.449219 550.335938 695 606.960938 C 642.292969 669.886719 563.113281 771.816406 515.417969 838.617188 L 637.9375 944.59375 C 714.082031 838.464844 816.992188 712.171875 915.960938 626.851562 C 912.339844 737.328125 914.878906 938.667969 915.082031 1049.152344 L 1077.070312 1048.855469 C 1080.609375 887.09375 1079.433594 712.835938 1077.296875 540.847656 C 1084.136719 550.78125 1097.445312 568.5 1097.445312 568.5 C 1098.585938 569.675781 1107.898438 585.835938 1111.449219 590.417969 L 1128.960938 620.375 L 1224.691406 786.539062 C 1241.425781 815.96875 1284.574219 889.609375 1285.304688 890.417969 L 1404.582031 820.828125 C 1403.347656 817.566406 1401.8125 815.992188 1400.632812 813.410156 "/></symbol><symbol id="gk-logo" viewBox="0 120 1000 380"><path d="Layer_1"/><path d="m207.58,224.07c-.71-8.13-1.16-17.65-1.93-25.78-.18-1.81-2.04-14.65-2.04-14.65-4.6.89-9.48.96-14.14,1.34-8.61.71-20.13.66-29.44,1.56,0,0-.01,2.84-.02,3.84,0,0-6.76-1.01-7.61-1.17-4.79-.92-9.41-2.22-14.28-2.64-11.35-1.02-23.31-.35-34.38,2.4-7.71,2.21-15.03,4.93-21.02,10.42-5.45,5.05-11.61,11.46-14.91,18.2-3.73,7.65-5.91,16.51-7.67,24.76-2.13,9.89-3.16,20.01-3.09,30.15.09,10.1,1.14,20.18,4.1,29.86,2.2,7.23,20.38,34.42,27.07,39.22,6.14,4.43,13.9,7.42,21.18,9.4,9.68,2.63,20.44,3.72,30.47,3.01,4.82-.36,9.47-2.24,14.08-3.57,1.04-.28,15.43-4.52,15.42-4.1-.11,2.29.06,10.08-.11,12.35-.56,7.57.58,12.64-.19,20.21-.75,7.27-3.58,22.77-7.39,29.47,0,0-14.8,12.96-21.81,13.64-3.72.36-16.04.18-19.44-1.67-3.46-1.87-10.06-8.24-12.24-11.34l-8.09-13.54-3.95-17.23c-.74-5.37-2.85-16.88-2.85-16.88-11.8,1.33-18.75.43-30.49,2.29-1.3.19-5.54.15-5.4,1.8.36,4.21.97,8.4,1.51,12.58.94,7.43,4.77,31.02,6.7,34.91,2.89,7.54,8.68,14.38,13.42,20.77,5.4,7.45,10.5,14.98,18.6,19.71,5.83,3.69,10.73,4.9,17.43,5.59,8.16.85,20.29,4.2,28.27,2.28,16.52-3.92,23.26-8.66,34.19-17.11,5.66-4.42,10.21-10.98,14.65-16.73,4.25-5.49,10.1-17.95,11.28-24.74,1.96-11.51,1.84-14.84,2.62-26.51,1.87-28.4,2.51-56.9,3.13-85.36.53-23.15-.32-45.38-.55-48.16-.48-5.78-.23-5.81-1.07-18.59"/><path d="m346.45,343.62l3.96-4.8c2.77-3.98,6.1-7.33,9.68-13-8.89-7.45-16.61-13.92-25.48-21.36-2.37,1.87-1.05,2.94-9.11,10.46,0,0-4.5,5.3-12.63,6.75-7.19,1.29-23.28-1.49-23.28-1.49,0,0-10.45-4.16-14.85-6.47-5.87-3.09-10.41-8.35-14.31-13.14.3-.61-3.33-18.43-3.77-18.77v-.3c22.04.2,53.94-1.37,64.24-1.9,10.16-.49,17.54-6.53,17.54-6.53.26-.62,7.39-5.54,7.39-5.54l6.89-8.33s4.25-11.11,5.49-16.97c.04-4.09-4.33-28.64-7.3-31.53l-8.34-10.83c-4.07-4.22-16.79-12.37-21.9-14.49l-4.7-2.07s-7.75-.97-10.88-1.09c-8.75-.35-16.24-1.02-24.45-.22-3.9-.04-11.27,3.68-14.67,5.54-13.99,7.65-22.79,15-31.15,26.62,0,0-.55,2.08-.89,2.28,0,0-8.98,21.43-11.09,32.2-.1,23.71-5.68,49.08,8.69,70.33.9,1.34,10.54,14.53,16,18.38l6.5,3.78c24.15,14.38,61.16,23.07,86.89,6.32l5.53-3.84Z"/><path d="m454.31,219.08c-.48,0-4.68-4.61-4.68-4.61-15.84-18.19-22.68-26.94-39.79-43.91l-10.38-10.67s-10.43-10.45-17.13-16.17c-.43-.48-5.97-5.39-5.97-5.58l-30.78,40.68c.64.44,1.2.94,1.67,1.55,0,0,15.32,14.44,22.1,21.14,0,0,42.95,48.99,67.58,69.62-17.43,15.17-38.5,29.39-53.5,46.9-16.66,19.46-41.73,51-56.84,71.68l37.87,33.49c24.13-32.86,56.68-71.92,87.86-98.21-1.51,34.47-1.41,97.31-1.72,131.79l50.55.46c3.32-100.93.92-217.53,1.79-312.82l-47.29-.43-.02,1.91s-1.11,48.78-1.34,73.15"/><path d="m789.16,267.54c-.17-4.57-1.33-9.05-1.72-13.61-.42-4.93-1.16-9.58-2.98-14.19-2.68-6.77-6.23-13.32-11.31-18.59-2.73-2.84-5.97-4.91-9.29-6.98-4.39-2.77-8.91-5.42-13.55-7.76-4.02-2.02-8.6-3.03-13-3.81-9.07-1.64-18.2-1.94-27.4-1.82-7.73.09-15.66,1.79-22.88,4.58-9.16,3.53-18.25,8.87-23.84,17.18-5.78,8.62-10.47,17.99-13.67,27.87-3.35,10.32-5.34,20.92-4.76,31.81.55,10.67,3.37,21.15,8.64,30.45,2.09,3.68,4.54,7.14,7.34,10.31,1.23,1.41,2.43,3.25,3.88,4.4,1.65,1.34,3.31,2.67,4.97,4.01,3.11,2.48,6.39,4.53,9.77,6.68,6.11,3.86,13.41,5.26,20.4,6.81,3.68.8,7.16,1.09,10.9,1.12,4.97.05,9.95.17,14.93-.01,1.73-.05,3.27-.57,4.93-1.02,2.55-.73,5.13-1.44,7.66-2.16,2.49-.7,4.98-1.36,7.47-2.02,2.29-.62,4.76-1.02,6.89-2.09,2.32-1.16,4.6-2.42,6.8-3.8,4.26-2.6,8.51-5.32,12.32-8.59,3.74-3.21,6.28-7.09,8.73-11.32,2.09-3.64,4.08-7.36,5.93-11.15,1.44-2.92,2.71-5.83,3.2-9.07,1.39-9.06-.07-18.17-.36-27.23-.19-4.72.14,4.67,0,0"/><path d="m941.76,257.47c-2.45-6.21-3.26-12.6-6.46-18.65-3.78-7.07-8.81-13.36-15.66-17.97-27.53-15.94-63.84-21.97-92.42-1.73l-9.82,9-.67,1.04c-9.41,13.66-14.11,31.8-15.18,39.89-.86,6.55.34,13.7,1.19,20.22,1.32,9.81,5.22,14.88,7.89,22,3.24,5.25,6.67,10.34,10.66,15.12,4.71,5.58,9.66,8.57,16.33,11.72,4.57,2.15,9.29,4.5,14.18,5.93,2.72.82,6.68,2.61,9.57,2.44,13.11,1.69,26.15,2.91,38.78-1.62,9.15-3.29,16.58-7.69,22.46-15.24,4.62-5.88,9.18-12.13,12.55-18.77,3.51-6.87,4.58-14.38,5.84-21.81,1.02-5.94,1.91-11.54,1.9-17.59.01-2.86.15-5.75,0-8.61-.09-1.86-1.04-3.61-1.13-5.38-.2-.51.03.54,0,0"/><path d="m670.93,370.77c-11.81-21.31-45.82-82.03-45.82-82.03,0,0-10.03-15.43-10.49-16.29-3.37-4.52-5.9-9.43-9.45-13.87,7.81-7.72,9.88-10.03,9.88-10.03l13.81-14.33c5.13-5.17,10.64-10.25,16.39-14.66.24-.24,5.1-5,5.1-5,0,0,8.08-6.67,11.29-10.01l-29.31-32.05c-2.54,2.42-11.3,10.01-11.3,10.01,0,0-4.92,4.82-5.53,5.4l-13.4,11.76s-25.51,27.57-36.54,38.83c.02-2.31-1.18-26.35-1.18-26.35-.89-21.79-.61-44.77-1.5-57.29l-44.8-.41c-1.74,18.72,1.65,99.2,1.64,100.4,0,0-.1,87.1-.64,146.04l49.73.73c.33-35.51-2.21-67.74-1.88-103.27l7.6-8.29c2,3.04,6.42,9.1,6.42,9.1.35.37,3.18,5.46,4.27,6.9l5.33,9.43,29.14,52.28c5.09,9.26,18.23,32.43,18.46,32.69l37.53-21.19c-.37-1.02-.84-1.52-1.2-2.33,0,0-2.34-3.98-3.56-6.16"/></symbol></svg>
+<svg id="bgsplat" aria-hidden="true"></svg>
+<div class="wrap">
+  <header>
+    <div>
+      <svg class="logo" aria-label="Gekkoo"><use href="#gk-logo"/></svg>
+      <h1>Operatie <span>Spatkunst</span></h1>
+      <p class="lede">Alle kleur is uit het gebouw verdwenen. Elk duo zoekt in zijn kamer de juiste kleurcode. Geef die hier in: de kamer krijgt haar kleur terug en jullie verdienen een cijfer van de kluiscode.</p>
+    </div>
+    <div>
+      <div class="codelabel">Kluiscode</div>
+      <div class="codebar" id="codebar"></div>
+    </div>
+  </header>
+
+  <form class="entry" id="form" autocomplete="off">
+    <div class="swatch" id="swatch"></div>
+    <label class="hexbox"><span>#</span><input id="hex" maxlength="7" placeholder="FFFFFF" spellcheck="false" aria-label="Hexcode"></label>
+    <button type="submit">Spat!</button>
+    <div id="msg">Geef jullie kleurcode in.</div>
+  </form>
+
+  <div class="grid" id="upper"></div>
+  <div class="two" id="lower"></div>
+
+  <footer>
+    <span>Limburgstraat 49-53 · HQ: refter, 2de verdiep</span>
+    <span><button id="showintro">intro</button> · <button id="reset" title="Spel resetten">reset</button></span>
+  </footer>
+</div>
+
+<div id="intro"><svg class="ibg" id="introbg" aria-hidden="true"></svg>
+  <div class="icard">
+    <svg class="logo" aria-label="Gekkoo"><use href="#gk-logo"/></svg>
+    <h2>Oei. Alle <span>kleur</span> is verdwenen.</h2>
+    <p class="story">Vanochtend was ons gebouw nog vol kleur. Nu is alles wit en saai. Zeven kamers zijn hun kleur kwijt, en jullie zijn de enigen die ze kunnen terugbrengen.<br><br>Elk duo krijgt een kamer en moet daar de <b>juiste kleurcode</b> vinden. Kom met die code naar het HQ hier in de refter. Elke juiste code geeft een kamer haar kleur terug. Lukt het met alle zeven, dan ontgrendelen jullie <b>samen</b> iets groots.</p>
+    <h3>De duo's</h3>
+    <div class="teams" id="teams"></div>
+    <button class="go" id="go">Aan de slag!</button><span class="note">Klik om te starten</span>
+  </div>
+</div>
+<div id="zoom"><div class="zbox"><div class="ztitle" id="ztitle"></div><div id="zsvg"></div></div></div>
+<div id="finale"><div class="box">
+  <h3>DE KLUIS IS OPEN</h3>
+  <p>Alle zeven kleuren gevonden. Naar de kelder!</p>
+  <div class="big" id="finalcode"></div>
+  <button id="closefin">sluiten</button>
+</div></div>
+
+<script>
+const DATA = {"floors": [{"id": "kelder", "name": "Kelder", "sub": "Ondergronds magazijn", "W": 55.4, "fs": 0.75, "outline": [[11.4, -4.7], [21.4, -4.7], [21.4, 0], [55.4, 0], [55.4, 10], [31.354954954954955, 10], [31.354954954954955, 4.5], [11.4, 4.5]], "walls": [[[31.508108108108107, 3.404255319148936], [31.508108108108107, 10]], [[31.508108108108107, 3.404255319148936], [32.42702702702702, 3.404255319148936]], [[33.8054054054054, 3.404255319148936], [36.868468468468464, 3.404255319148936]], [[37.94054054054054, 3.404255319148936], [38.85945945945946, 3.404255319148936]], [[38.85945945945946, 3.404255319148936], [38.85945945945946, 10]], [[31.508108108108107, 7.085106382978723], [38.85945945945946, 7.085106382978723]], [[34.17297297297297, 7.085106382978723], [34.17297297297297, 10]], [[39.62522522522522, 1.1063829787234043], [48.508108108108104, 1.1063829787234043]], [[42.228828828828824, 10], [42.228828828828824, 8.085106382978724]], [[42.228828828828824, 8.085106382978724], [54.634234234234235, 8.085106382978724]]], "boxes": [[[47.28288288288288, 0.8085106382978723], 1.2, 0.35, "elek. bord"]], "labels": [[[16.4, -0.1], "Ruimte achteraan", "\u00b1 10 \u00d7 9,2 m"], [[27.5, 2.2], "Doorgang", "\u00b1 4,5 m breed"], [[44, 3.2], "Open kelderruimte", "\u00b1 24 \u00d7 10 m"], [[35.18378378378378, 5.212765957446808], "Lokaal", "\u00b1 6 \u00d7 4,5 m"], [[32.825225225225225, 8.53191489361702], "CV", ""], [[36.5009009009009, 8.53191489361702], "Ruimte", ""], [[48.814414414414415, 9.042553191489361], "Ruimte", ""]], "note": "Totale lengte (doorgang + kelder) 34 m; deel achteraan 10 \u00d7 9,2 m."}, {"id": "gelijkvloers", "name": "Gelijkvloers", "sub": "Magazijn", "W": 55.4, "fs": 0.75, "outline": [[0, 5.4], [0, 3.05], [21.4, -3.6], [21.4, 0], [55.4, 0], [55.4, 11.7], [34.4, 11.7], [34.4, 5.4]], "walls": [[[41.534615384615385, 0], [41.534615384615385, 1.236786469344609]], [[41.534615384615385, 1.236786469344609], [51.63076923076923, 1.236786469344609]], [[51.63076923076923, 1.236786469344609], [51.63076923076923, 1.4841437632135306]], [[43.87692307692308, 4.20507399577167], [43.87692307692308, 5.441860465116279]], [[43.87692307692308, 7.049682875264271], [43.87692307692308, 11.7]], [[43.87692307692308, 4.20507399577167], [51.63076923076923, 4.20507399577167]], [[53.78461538461538, 4.20507399577167], [55.4, 4.20507399577167]], [[43.87692307692308, 7.173361522198731], [46.38076923076923, 7.173361522198731]], [[46.38076923076923, 7.173361522198731], [46.38076923076923, 9.275898520084567]], [[44.63076923076923, 7.173361522198731], [44.63076923076923, 9.275898520084567]], [[44.09230769230769, 9.350105708245241], [54.323076923076925, 9.350105708245241]], [[54.996153846153845, 9.350105708245241], [55.4, 9.350105708245241]], [[39.65, 9.350105708245241], [42.207692307692305, 9.350105708245241]], [[42.207692307692305, 9.350105708245241], [42.207692307692305, 11.7]], [[51.76538461538462, 4.254545454545454], [53.56923076923077, 8.162790697674417]], [[52.49230769230769, 4.254545454545454], [54.18846153846154, 6.92600422832981]], [[54.18846153846154, 6.92600422832981], [54.18846153846154, 8.162790697674417]], [[53.56923076923077, 8.162790697674417], [54.18846153846154, 8.162790697674417]]], "stairs": [[44.76538461538461, 10.512684989429175, 2.82692307692308, 1.1873150105708241, "h"]], "labels": [[[13.6, 2.6], "Achterbouw", "21,4 m lang, 9 m \u2192 smal"], [[27.9, 2.7], "Doorgang", "13 \u00d7 5,4 m"], [[38.6, 6.0], "Open ruimte", "voorbouw 21 \u00d7 11,7 m"], [[48.13076923076923, 5.812896405919662], "Onthaal", "", 0.55], [[45.49230769230769, 8.41014799154334], "WC?", "", 0.4], [[40.91538461538461, 10.760042283298096], "Keuken", "", 0.5], [[51.09230769230769, 10.760042283298096], "Trap", "", 0.55], [[46.51538461538461, 0.7915433403805496], "Nis", "", 0.45]], "note": "Totale lengte 55,4 m (21,4 + 13 + 21). Schuine dubbele lijn rechts: functie niet benoemd op het plan."}, {"id": "verdiep-1", "name": "1ste verdiep", "sub": "Kantoorverdieping", "W": 12.5, "fs": 0.32, "outline": [[0, 0], [12.5, 0], [12.5, 11.5], [0, 11.5]], "walls": [[[0, 8.853855721393035], [3.4957627118644066, 8.853855721393035]], [[4.237288135593221, 8.853855721393035], [8.086158192090396, 8.853855721393035]], [[8.82768361581921, 8.853855721393035], [12.5, 8.853855721393035]], [[4.413841807909605, 8.853855721393035], [4.413841807909605, 11.5]], [[8.086158192090396, 8.853855721393035], [8.086158192090396, 11.5]], [[10.110640301318268, 8.853855721393035], [10.110640301318268, 9.068407960199005]], [[9.027777777777779, 10.141169154228855], [9.027777777777779, 11.5]], [[9.027777777777779, 10.141169154228855], [9.204331450094163, 10.141169154228855]], [[10.110640301318268, 9.926616915422885], [10.110640301318268, 11.5]], [[10.911016949152541, 10.141169154228855], [10.911016949152541, 11.5]], [[10.852165725047081, 10.141169154228855], [11.028719397363465, 10.141169154228855]], [[11.793785310734464, 10.141169154228855], [12.5, 10.141169154228855]]], "stairs": [[5.8498116760828625, 8.853855721393035, 2.2363465160075338, 2.6461442786069647, "v"]], "cols": [[4.413841807909605, 4.205223880597015], [8.73352165725047, 4.205223880597015]], "cv": [[9.286723163841808, 11.142412935323383]], "labels": [[[6.25, 3.6], "Kantoor", "12,5 \u00d7 8,7 m"], [[2.201035781544256, 10.212686567164178], "Copykot", "3,8 \u00d7 2,8 m"], [[5.143596986817326, 10.212686567164178], "Trap", ""], [[11.322975517890772, 9.425995024875622], "Gang", ""], [[11.711393596986817, 10.927860696517413], "WC", ""]], "note": "Twee vrijstaande kolommen in de kantoorruimte. Sanitair: twee cellen van \u00b1 1,3 m."}, {"id": "verdiep-2", "name": "2de verdiep", "sub": "Keuken, refter, vergaderlokalen", "W": 12.5, "fs": 0.32, "outline": [[0, 0], [12.5, 0], [12.5, 11.5], [0, 11.5]], "walls": [[[4.2, 0], [4.2, 0.43017456359102246]], [[4.2, 1.319201995012469], [4.2, 3.111596009975062]], [[0, 3.111596009975062], [4.533333333333333, 3.111596009975062]], [[4.533333333333333, 3.111596009975062], [4.533333333333333, 7.743142144638404]], [[3.977777777777778, 7.743142144638404], [4.533333333333333, 7.743142144638404]], [[3.111111111111111, 7.743142144638404], [3.111111111111111, 8.847256857855362]], [[0, 8.847256857855362], [3.2777777777777777, 8.847256857855362]], [[4.144444444444445, 8.847256857855362], [4.144444444444445, 11.5]], [[3.977777777777778, 8.847256857855362], [8.144444444444444, 8.847256857855362]], [[7.977777777777778, 8.847256857855362], [7.977777777777778, 11.5]], [[4.533333333333333, 6.882793017456359], [8.144444444444444, 6.882793017456359]], [[9.033333333333333, 3.111596009975062], [9.033333333333333, 7.485037406483791]], [[9.033333333333333, 3.111596009975062], [11.644444444444444, 3.111596009975062]], [[8.833333333333334, 8.847256857855362], [12.5, 8.847256857855362]], [[10.033333333333333, 8.847256857855362], [10.033333333333333, 9.134039900249377]], [[9.0, 10.209476309226932], [9.0, 11.5]], [[9.0, 10.209476309226932], [9.166666666666666, 10.209476309226932]], [[10.033333333333333, 9.99438902743142], [10.033333333333333, 11.5]], [[10.755555555555556, 10.209476309226932], [10.755555555555556, 11.5]], [[10.688888888888888, 10.209476309226932], [10.866666666666667, 10.209476309226932]], [[11.444444444444445, 10.209476309226932], [12.5, 10.209476309226932]]], "dashed": [[4.533333333333333, 6.882793017456359, 2.4111111111111114, 0.8603491271820447]], "stairs": [[5.777777777777778, 8.847256857855362, 2.2, 2.6527431421446384, "v"]], "cv": [[9.777777777777779, 11.184538653366584]], "labels": [[[2.111111111111111, 1.53428927680798], "Mini vergaderlokaal", "3,8 \u00d7 2,8 m"], [[2.2222222222222223, 5.907730673316708], "Klein vergaderlokaal", "4,2 \u00d7 5,1 m"], [[2.111111111111111, 10.281172069825436], "Badkamer", "3,8 \u00d7 2,7 m"], [[6.888888888888889, 3.6134663341645887], "Refter", "L-vorm, \u00b1 6,6 m"], [[10.777777777777779, 6.051122194513716], "Keuken", "3,7 \u00d7 4,6 m"], [[6.111111111111111, 8.316708229426434], "Gang", "5,8 m"], [[5.0, 10.281172069825436], "Trap", ""], [[11.277777777777779, 9.492518703241895], "Gang", ""], [[11.633333333333333, 10.998129675810473], "WC", ""]], "note": "Gestreepte zone boven de trap: vide/lichtkoepel op het plan."}, {"id": "verdiep-3", "name": "3de verdiep", "sub": "3e verdiep", "W": 12.5, "fs": 0.32, "outline": [[0, 0], [12.5, 0], [12.5, 11.5], [0, 11.5]], "walls": [[[4.4361702127659575, 0], [4.4361702127659575, 3.113259668508287]], [[4.4361702127659575, 3.113259668508287], [5.159574468085107, 3.113259668508287]], [[5.159574468085107, 3.113259668508287], [5.159574468085107, 5.781767955801105]], [[5.159574468085107, 5.781767955801105], [8.106382978723405, 5.781767955801105]], [[8.851063829787234, 5.781767955801105], [12.5, 5.781767955801105]], [[4.4361702127659575, 4.002762430939226], [4.4361702127659575, 7.751381215469613]], [[0, 2.6685082872928176], [3.3191489361702127, 2.6685082872928176]], [[3.3191489361702127, 2.223756906077348], [3.3191489361702127, 3.113259668508287]], [[3.3191489361702127, 2.223756906077348], [3.5, 2.223756906077348]], [[0, 4.193370165745856], [3.478723404255319, 4.193370165745856]], [[3.3191489361702127, 4.002762430939226], [3.3191489361702127, 4.193370165745856]], [[4.24468085106383, 2.223756906077348], [4.4361702127659575, 2.223756906077348]], [[4.24468085106383, 4.193370165745856], [4.4361702127659575, 4.193370165745856]], [[0, 7.522651933701657], [4.4361702127659575, 7.522651933701657]], [[3.1382978723404253, 6.861878453038674], [3.1382978723404253, 7.522651933701657]], [[3.1382978723404253, 10.8646408839779], [3.1382978723404253, 11.5]], [[4.4361702127659575, 8.640883977900552], [4.4361702127659575, 11.5]], [[4.4361702127659575, 8.856906077348066], [8.106382978723405, 8.856906077348066]], [[9.01063829787234, 5.781767955801105], [9.01063829787234, 5.997790055248619]], [[9.01063829787234, 6.9], [9.01063829787234, 9.085635359116022]], [[9.01063829787234, 9.975138121546962], [9.01063829787234, 10.165745856353592]], [[8.851063829787234, 8.856906077348066], [10.659574468085106, 8.856906077348066]], [[10.659574468085106, 8.856906077348066], [10.659574468085106, 11.5]], [[8.851063829787234, 10.191160220994474], [9.382978723404255, 10.191160220994474]], [[9.382978723404255, 10.191160220994474], [9.382978723404255, 11.5]]], "stairs": [[6.031914893617022, 8.856906077348066, 1.914893617021276, 2.643093922651934, "v"]], "cv": [[10.393617021276595, 11.182320441988951]], "labels": [[[2.148936170212766, 1.270718232044199], "Mini vergaderlokaal", ""], [[1.6170212765957446, 3.430939226519337], "Kleine ruimte", ""], [[2.148936170212766, 5.845303867403315], "Kamer", ""], [[2.148936170212766, 9.530386740331492], "Kamer", ""], [[8.74468085106383, 2.160220994475138], "Leefruimte", ""], [[6.723404255319149, 7.2430939226519335], "Hal", ""], [[5.340425531914893, 10.165745856353592], "Trap", ""], [[10.872340425531915, 7.370165745856354], "Keuken", "fornuis"], [[10.02127659574468, 9.657458563535911], "CV", ""]], "note": "Geen maten aangeduid voor deze verdieping: buitenmaat overgenomen van 1ste/2de verdiep (12,5 \u00d7 11,5 m). Kamerfuncties alleen waar het plan ze toont (keuken)."}], "targets": [{"floor": "gelijkvloers", "name": "Onthaal", "poly": [[43.877, 4.205], [55.4, 4.205], [55.4, 9.35], [46.381, 9.35], [46.381, 7.173], [43.877, 7.173]], "h": 8143785634067134, "o": 0, "slot": 0}, {"floor": "verdiep-1", "name": "Kantoor", "poly": [[0, 0], [12.5, 0], [12.5, 8.854], [0, 8.854]], "h": 7126577094649298, "o": 2, "slot": 1}, {"floor": "verdiep-1", "name": "Copykot", "poly": [[0, 8.854], [4.414, 8.854], [4.414, 11.5], [0, 11.5]], "h": 106246839877702, "o": 9, "slot": 2}, {"floor": "verdiep-2", "name": "Klein vergaderlokaal", "poly": [[0, 3.112], [4.533, 3.112], [4.533, 7.743], [3.111, 7.743], [3.111, 8.847], [0, 8.847]], "h": 5967065635811439, "o": 7, "slot": 3}, {"floor": "verdiep-2", "name": "Keuken", "poly": [[9.033, 3.112], [12.5, 3.112], [12.5, 8.847], [9.033, 8.847]], "h": 8181504164947995, "o": 9, "slot": 4}, {"floor": "verdiep-3", "name": "Mini vergaderlokaal", "poly": [[0, 0], [4.436, 0], [4.436, 2.669], [0, 2.669]], "h": 8157609844278494, "o": 7, "slot": 5}, {"floor": "verdiep-3", "name": "Leefruimte", "poly": [[4.436, 0], [12.5, 0], [12.5, 5.782], [5.16, 5.782], [5.16, 3.113], [4.436, 3.113]], "h": 1527166587031377, "o": 3, "slot": 6}]};
+const FLOORS = DATA.floors, TARGETS = DATA.targets;
+const NS = "http://www.w3.org/2000/svg";
+const el = (n,a={},p)=>{ const e=document.createElementNS(NS,n); for(const k in a) e.setAttribute(k,a[k]); if(p) p.appendChild(e); return e; };
+const PAL = ["#FFCC33","#FF3333","#003399","#FF99CC","#479554","#FFCC33","#FF3333","#FF99CC"];
+const HOUSE = ["#FFCC33","#FF3333","#FF99CC","#479554","#FFFFFF"];
+const ICONS = ["ic-streep","ic-boog","ic-cirkel","ic-ster"];
+
+const cyrb53=(str,seed=0)=>{let h1=0xdeadbeef^seed,h2=0x41c6ce57^seed;for(let i=0,ch;i<str.length;i++){ch=str.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507);h1^=Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507);h2^=Math.imul(h1^(h1>>>13),3266489909);return 4294967296*(2097151&h2)+(h1>>>0);};
+
+// ---------- state ----------
+let state = {};
+try { state = JSON.parse(localStorage.getItem("spatkunst")||"{}"); } catch(e) { state = {}; }
+const save = ()=>{ try { localStorage.setItem("spatkunst", JSON.stringify(state)); } catch(e){} };
+
+// ---------- random ----------
+function rng(seed){ let s=seed>>>0||1; return ()=>{ s^=s<<13; s>>>=0; s^=s>>17; s^=s<<5; s>>>=0; return s/4294967296; }; }
+
+// splat path: irregular blob with droplets
+function splatPath(cx,cy,r,rand){
+  const n=14+Math.floor(rand()*8), pts=[];
+  for(let i=0;i<n;i++){ const a=i/n*Math.PI*2; const spike = rand()<.3 ? 1.5+rand()*.9 : .75+rand()*.35; pts.push([cx+Math.cos(a)*r*spike, cy+Math.sin(a)*r*spike]); }
+  let d=`M${pts[0][0]},${pts[0][1]}`;
+  for(let i=0;i<n;i++){ const p=pts[i], q=pts[(i+1)%n]; const mx=(p[0]+q[0])/2, my=(p[1]+q[1])/2; d+=` Q${p[0]},${p[1]} ${mx},${my}`; }
+  return d+"Z";
+}
+function addSplats(g, box, base, seed, scale, count){
+  const rand=rng(seed);
+  const [x0,y0,x1,y1]=box, w=x1-x0, h=y1-y0;
+  for(let i=0;i<count;i++){
+    const cx=x0+rand()*w, cy=y0+rand()*h, r=(0.25+rand()*0.9)*scale;
+    const col = rand()<.35 ? base : PAL[Math.floor(rand()*PAL.length)];
+    const delay=(i*0.035).toFixed(2)+"s";
+    el("path",{d:splatPath(cx,cy,r,rand),fill:col,class:"splat",style:`animation-delay:${delay}`, opacity:(0.75+rand()*.25).toFixed(2)},g);
+    const drops=2+Math.floor(rand()*5);
+    for(let k=0;k<drops;k++){ const a=rand()*Math.PI*2, dist=r*(1.6+rand()*2.2);
+      el("circle",{cx:cx+Math.cos(a)*dist, cy:cy+Math.sin(a)*dist, r:(r*(.08+rand()*.2)).toFixed(3), fill:col, class:"splat", style:`animation-delay:${delay}`},g); }
+    if(rand()<.4){ // drip
+      const dw=r*(.12+rand()*.15), dl=r*(1+rand()*2.5);
+      el("rect",{x:cx-dw/2,y:cy,width:dw,height:dl,rx:dw/2,fill:col,class:"splat",style:`animation-delay:${delay}`},g);
+    }
+  }
+}
+
+function addIcons(g, box, seed, size, count, colors){
+  const rand=rng(seed); const [x0,y0,x1,y1]=box;
+  for(let i=0;i<count;i++){
+    const s=size*(0.7+rand()*0.6), x=x0+rand()*(x1-x0)-s/2, y=y0+rand()*(y1-y0)-s/2, rot=Math.floor(rand()*360);
+    const wrap=el("g",{transform:`rotate(${rot} ${x+s/2} ${y+s/2})`},g);
+    el("use",{href:"#"+ICONS[Math.floor(rand()*ICONS.length)],x,y,width:s,height:s,fill:colors[Math.floor(rand()*colors.length)],class:"splat",style:`animation-delay:${(0.3+i*0.08).toFixed(2)}s`},wrap);
+  }
+}
+// ---------- draw floors ----------
+const svgs = {};
+function draw(f){
+  const xs=f.outline.map(p=>p[0]), ys=f.outline.map(p=>p[1]);
+  const big=f.W>20, pad=big?1.2:0.6;
+  const minX=Math.min(...xs)-pad, minY=Math.min(...ys)-pad, maxX=Math.max(...xs)+pad, maxY=Math.max(...ys)+pad;
+  const svg=el("svg",{viewBox:`${minX} ${minY} ${maxX-minX} ${maxY-minY}`,class:"plan"});
+  const defs=el("defs",{},svg);
+  const wT=big?0.34:0.2, wI=big?0.18:0.1;
+  el("polygon",{points:f.outline.map(p=>p.join(",")).join(" "),fill:"var(--room)"},svg);
+  // target room layers
+  TARGETS.filter(t=>t.floor===f.id).forEach(t=>{
+    const cp=el("clipPath",{id:"clip"+t.slot},defs);
+    el("polygon",{points:t.poly.map(p=>p.join(",")).join(" ")},cp);
+    const g=el("g",{"clip-path":`url(#clip${t.slot})`,id:"room"+t.slot},svg);
+    el("polygon",{points:t.poly.map(p=>p.join(",")).join(" "),fill:"transparent",class:"target"},g);
+  });
+  (f.stairs||[]).forEach(([x,y,w,h])=>{ el("rect",{x,y,width:w,height:h,fill:"#fff",stroke:"var(--wall)","stroke-width":wI*.5},svg); for(let i=x+0.28;i<x+w-0.01;i+=0.28) el("line",{x1:i,y1:y,x2:i,y2:y+h,stroke:"#9a93ad","stroke-width":0.035},svg); });
+  (f.walls||[]).forEach(([a,b])=>el("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:"var(--wall)","stroke-width":wI,"stroke-linecap":"square"},svg));
+  el("polygon",{points:f.outline.map(p=>p.join(",")).join(" "),fill:"none",stroke:"var(--wall)","stroke-width":wT},svg);
+  (f.cols||[]).forEach(([x,y])=>el("rect",{x:x-.18,y:y-.18,width:.36,height:.36,fill:"var(--wall)"},svg));
+  // labels
+  const fs=f.fs;
+  f.labels.forEach(([[x,y],t,d,sz])=>{
+    const s=sz||fs; const tg=TARGETS.find(q=>q.floor===f.id && q.name===t);
+    const isHQ = f.id==="verdiep-2" && t==="Refter";
+    const tt=el("text",{x,y:y+s*0.35,"text-anchor":"middle","font-size":isHQ? s*1.25 : s,class:isHQ?"hq":"rl","data-target":tg?tg.slot:""},svg);
+    tt.textContent = isHQ ? "★ HQ · Refter" : t;
+  });
+  if(f.id==="kelder"){
+    const t=el("text",{x:46,y:6.9,"text-anchor":"middle","font-size":1.4,class:"vault",fill:"#5a6fa8",id:"vaultlabel"},svg); t.textContent="KLUIS GESLOTEN";
+  }
+  svgs[f.id]=svg; return svg;
+}
+
+function card(f, extra=""){
+  const c=document.createElement("div"); c.className="card "+extra;
+  c.innerHTML=`<h2>${f.name}</h2><div class="sub">${f.sub}</div>`;
+  c.appendChild(draw(f)); return c;
+}
+const byId=id=>FLOORS.find(f=>f.id===id);
+const up=document.getElementById("upper"), low=document.getElementById("lower");
+["verdiep-1","verdiep-2","verdiep-3"].forEach(id=>up.appendChild(card(byId(id))));
+low.appendChild(card(byId("gelijkvloers")));
+low.appendChild(card({...byId("kelder"), sub:"De kluis met de doeken"}));
+
+// ---------- code bar ----------
+const bar=document.getElementById("codebar");
+const slots = TARGETS.map(t=>{ const s=document.createElement("div"); s.className="slot"; s.innerHTML=`?<small>${t.name.replace(" vergaderlokaal"," vergader.")}</small>`; bar.appendChild(s); return s; });
+
+// ---------- unlock ----------
+function unlock(t, hex, animate){
+  const digit = ((t.o - [0,2,4].reduce((a,j)=>a+parseInt(hex.substr(j,2),16),0)) % 10 + 10) % 10;
+  const col="#"+hex;
+  const g=document.getElementById("room"+t.slot);
+  g.querySelector(".target").setAttribute("fill",col);
+  const xs=t.poly.map(p=>p[0]), ys=t.poly.map(p=>p[1]);
+  const box=[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)];
+  const area=(box[2]-box[0])*(box[3]-box[1]);
+  const scale = Math.max(0.35, Math.sqrt(area)/7);
+  const sg=el("g",{},g);
+  addSplats(sg, box, col, t.slot*977+7, scale, Math.round(18+area/3));
+  addIcons(sg, box, t.slot*31+3, Math.max(0.9, scale*1.4), Math.round(3+area/14), ["#FFCC33","#FF3333","#FF99CC","#479554","#003399","#FFFFFF"]);
+  if(!animate) sg.querySelectorAll(".splat").forEach(n=>n.style.animation="none");
+  document.querySelectorAll(`text[data-target="${t.slot}"]`).forEach(n=>n.classList.add("lit"));
+  const s=slots[t.slot]; s.classList.add("on"); s.style.background=col; s.style.borderColor=col; s.firstChild.textContent=digit;
+  return digit;
+}
+
+function checkFinale(animate){
+  const all = TARGETS.every(t=>state[t.slot]);
+  if(!all) return;
+  const code = TARGETS.map(t=>slots[t.slot].firstChild.textContent).join("");
+  const vl=document.getElementById("vaultlabel"); if(vl){ vl.textContent="KLUIS OPEN · "+code; vl.setAttribute("fill","#FF3333"); }
+  if(animate){ document.getElementById("finalcode").textContent=code; document.getElementById("finale").classList.add("show"); bigSplash(); }
+}
+
+
+// ---------- zoom on unlock ----------
+let zoomTimer=null;
+function closeZoom(){ const z=document.getElementById("zoom"); z.classList.remove("show"); clearTimeout(zoomTimer); setTimeout(()=>{ if(!z.classList.contains("show")) document.getElementById("zsvg").innerHTML=""; },500); }
+document.getElementById("zoom").addEventListener("click",closeZoom);
+function zoomTo(t, digit, col){
+  const src=svgs[t.floor]; const vb=src.viewBox.baseVal;
+  const clone=src.cloneNode(true); clone.removeAttribute("class");
+  clone.setAttribute("preserveAspectRatio","xMidYMid meet");
+  const holder=document.getElementById("zsvg"); holder.innerHTML=""; holder.appendChild(clone);
+  document.getElementById("ztitle").innerHTML=`${t.name}<span class="zdigit" style="background:${col}">${digit}</span>`;
+  const z=document.getElementById("zoom"); requestAnimationFrame(()=>z.classList.add("show"));
+  const xs=t.poly.map(p=>p[0]), ys=t.poly.map(p=>p[1]);
+  let x0=Math.min(...xs), y0=Math.min(...ys), x1=Math.max(...xs), y1=Math.max(...ys);
+  const w=x1-x0, h=y1-y0, pad=Math.max(w,h)*0.18;
+  const to=[x0-pad, y0-pad, w+2*pad, h+2*pad], from=[vb.x,vb.y,vb.width,vb.height];
+  const start=performance.now()+350, dur=1100, ease=k=>1-Math.pow(1-k,3);
+  (function step(now){ const k=Math.min(1,Math.max(0,(now-start)/dur)), e=ease(k);
+    clone.setAttribute("viewBox", from.map((v,i)=>v+(to[i]-v)*e).join(" "));
+    if(k<1 && document.getElementById("zsvg").contains(clone)) requestAnimationFrame(step); })(performance.now());
+  clearTimeout(zoomTimer); zoomTimer=setTimeout(closeZoom, 4200);
+}
+
+// restore
+TARGETS.forEach(t=>{ if(state[t.slot]) unlock(t, state[t.slot], false); });
+checkFinale(false);
+
+// ---------- input ----------
+const inp=document.getElementById("hex"), sw=document.getElementById("swatch"), msg=document.getElementById("msg"), form=document.getElementById("form");
+const norm=v=>v.trim().replace(/^#/,"").toUpperCase();
+inp.addEventListener("input",()=>{ const v=norm(inp.value); inp.value=v.replace(/[^0-9A-F]/g,"").slice(0,6); sw.style.background = inp.value.length===6 ? "#"+inp.value : "#00205f"; });
+form.addEventListener("submit",e=>{
+  e.preventDefault();
+  const v=norm(inp.value);
+  if(!/^[0-9A-F]{6}$/.test(v)){ say("Een hexcode heeft 6 tekens: 0–9 en A–F.", false); return; }
+  const h=cyrb53("splash:"+v,7);
+  const t=TARGETS.find(q=>q.h===h);
+  if(!t){ say("Die kleur opent geen enkele kamer. Probeer opnieuw!", false); return; }
+  if(state[t.slot]){ say(`${t.name} is al ontgrendeld.`, null); return; }
+  state[t.slot]=v; save();
+  const d=unlock(t,v,true);
+  zoomTo(t, d, "#"+v);
+  say(`${t.name} ontgrendeld! Cijfer ${t.slot+1} van de code is ${d}.`, true, "#"+v);
+  inp.value=""; sw.style.background="#00205f";
+  setTimeout(()=>checkFinale(true), 4800);
+});
+function say(text, ok, col){
+  msg.textContent=text; msg.style.color = ok ? "#FFCC33" : ok===false ? "#FF99CC" : "var(--muted)";
+  if(ok===false){ form.classList.remove("shake"); void form.offsetWidth; form.classList.add("shake"); }
+}
+
+// ---------- background + finale splash ----------
+const bg=document.getElementById("bgsplat");
+function bgSplats(){ bg.setAttribute("viewBox","0 0 100 60"); bg.setAttribute("preserveAspectRatio","xMidYMid slice"); addIcons(bg,[0,0,100,60],42,7,22,HOUSE); bg.querySelectorAll(".splat").forEach(n=>n.style.animation="none"); }
+bgSplats();
+function bigSplash(){
+  const f=document.getElementById("finale"); let s=f.querySelector("svg"); if(s) s.remove();
+  s=el("svg",{viewBox:"0 0 100 60",preserveAspectRatio:"xMidYMid slice",style:"position:absolute;inset:0;width:100%;height:100%;z-index:0"});
+  f.insertBefore(s,f.firstChild); addSplats(s,[0,0,100,60],"#FFCC33",Date.now()%100000,4,50); addIcons(s,[0,0,100,60],Date.now()%9999,8,18,HOUSE);
+}
+document.getElementById("closefin").onclick=()=>document.getElementById("finale").classList.remove("show");
+
+
+// ---------- intro ----------
+const TEAMS = [
+  ["Lies","Ouiam"], ["Annelies","Marki"], ["Aaron","Elke"], ["Sara Segers","Olaf"],
+  ["Joelle","Bouchra"], ["Sarade",null], [null,null]
+];
+const TCOL = ["#FFCC33","#FF3333","#FF99CC","#479554","#FFFFFF","#FFCC33","#FF99CC"];
+const tw=document.getElementById("teams");
+TEAMS.forEach((m,i)=>{
+  const d=document.createElement("div"); d.className="team";
+  const names=m.map(n=>n?n:'<span class="open">vrije plek</span>').join(" &amp; ");
+  d.innerHTML=`<svg fill="${TCOL[i]}"><use href="#${ICONS[i%4]}"/></svg><div><div class="tn">Duo ${i+1}</div><div class="tp">${names}</div></div>`;
+  tw.appendChild(d);
+});
+(function(){ const s=document.getElementById("introbg"); s.setAttribute("viewBox","0 0 100 60"); s.setAttribute("preserveAspectRatio","xMidYMid slice"); addIcons(s,[0,0,100,60],7,8,26,HOUSE); s.querySelectorAll(".splat").forEach(n=>n.style.animation="none"); })();
+const intro=document.getElementById("intro");
+document.getElementById("go").onclick=()=>{ intro.classList.add("gone"); setTimeout(()=>document.getElementById("hex").focus(),400); };
+document.getElementById("showintro").onclick=()=>intro.classList.remove("gone");
+
+// ---------- reset (spelleider) ----------
+let armed=false;
+document.getElementById("reset").onclick=(e)=>{
+  if(!armed){ armed=true; e.target.textContent="nog eens klikken om alles te wissen"; setTimeout(()=>{armed=false; e.target.textContent="reset";},3000); return; }
+  state={}; save(); location.reload();
+};
+</script>
+</body>
+</html>
